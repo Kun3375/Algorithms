@@ -100,21 +100,9 @@ public class Sort {
      * @param end   结束索引（不包含）
      */
     private static void recursiveMergeSortPart(int[] array, int start, int end) {
-//        if (start + 1 == end) {
-//            return;
-//        }
         
-        // 优化方案，需要排序的段落如果较为小时，使用插入排序
-        if (end - start <= 16) {
-            int temp;
-            for (int i = start; i < end; i++) {
-                temp = array[i];
-                int j = i;
-                for (; j > 0 && array[j - 1] > temp; j--) {
-                    array[j] = array[j - 1];
-                }
-                array[j] = temp;
-            }
+        // 可优化方案，需要排序的段落如果较为小时，使用插入排序
+        if (start + 1 == end) {
             return;
         }
         
@@ -126,11 +114,44 @@ public class Sort {
     }
     
     private static void recursiveMergeSortMerge(int[] array, int start, int end) {
+        
+        // ************************** 优化 **************************
+        // 两部分之间有有序性规律
+        // 如果某一段起始值比另一段结束值更大，直接拼接
+        int middle = (end - start) / 2 + start;
+        // 第二段更大的情况，直接返回
+        if (array[middle] > array[middle - 1]) {
+            return;
+        }
+        // 第一段更大，对调两部分
+        if (array[start] > array[end - 1]) {
+            // 两段不对称  5 6 7 1 2 3 4
+            //            5 6 7 4 2 3 7   1
+            //            5 6 3 4 2 6 7   1
+            if (((end - start) & 1) == 1) {
+                int copy = array[middle];
+                for(int delta = 0; start + delta < middle; delta++) {
+                    int temp = array[end - 1 - delta];
+                    array[end - 1 -delta] = array[middle - 1 - delta];
+                    array[middle - delta] = temp;
+                }
+                array[start] =  copy;
+            }
+            // 对称
+            for(int delta = 0; start + delta < middle; delta++) {
+                int newStart = start + delta, newMiddle = middle + delta;
+                array[newStart] = array[newStart] ^ array[newMiddle];
+                array[newMiddle] = array[newStart] ^ array[newMiddle];
+                array[newStart] = array[newStart] ^ array[newMiddle];
+            }
+        }
+        // ********************************************************
+        
         // 1.将需要排序的段落先复制一个副本
         int[] temp = Arrays.copyOfRange(array, start, end);
         // 2.这个副本有着有序的前后两个部分，记录下起始索引，中间索引（第二段的起始索引）
         int firStart = 0;
-        int middle = temp.length / 2;
+        middle = temp.length / 2;
         int secStart = middle;
         
         // 3.只要需要排序的段落没有完全排序完，就执行循环
@@ -153,6 +174,14 @@ public class Sort {
             }
             // 后半段较小
             array[start] = temp[secStart++];
+        }
+    }
+    
+    public static void main(String[] args) {
+        int[] ints = {4, 5, 1, 2, 3};
+        recursiveMergeSort(ints);
+        for (int anInt : ints) {
+            System.out.println(anInt);
         }
     }
     
