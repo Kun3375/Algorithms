@@ -100,9 +100,9 @@ public class Sort {
      * @param end   结束索引（不包含）
      */
     private static void recursiveMergeSortPart(int[] array, int start, int end) {
-        //        if (start + 1 == end) {
-        //            return;
-        //        }
+//        if (start + 1 == end) {
+//            return;
+//        }
         
         // 优化方案，需要排序的段落如果较为小时，使用插入排序
         if (end - start <= 16) {
@@ -126,31 +126,33 @@ public class Sort {
     }
     
     private static void recursiveMergeSortMerge(int[] array, int start, int end) {
+        // 1.将需要排序的段落先复制一个副本
+        int[] temp = Arrays.copyOfRange(array, start, end);
+        // 2.这个副本有着有序的前后两个部分，记录下起始索引，中间索引（第二段的起始索引）
+        int firStart = 0;
+        int middle = temp.length / 2;
+        int secStart = middle;
         
-        // 1.将有序的两部分拷贝
-        int[] part1 = Arrays.copyOfRange(array, start, (end - start) / 2 + start);
-        int[] part2 = Arrays.copyOfRange(array, (end - start) / 2 + start, end);
-        
-        // 2.保存目标数组，拷贝数组的索引值，长度
-        int index1 = 0, index2 = 0;
-        int length1 = part1.length;
-        int length2 = part2.length;
-        
-        // 3.依次比较拷贝数组，将较小值赋值给目标数组，同时增加索引值
-        for (; index1 != length1 && index2 != length2; ) {
-            if (part1[index1] < part2[index2]) {
-                array[start++] = part1[index1++];
+        // 3.只要需要排序的段落没有完全排序完，就执行循环
+        for (; start < end; start++) {
+            // 前半段完成
+            if (firStart == middle) {
+                array[start] = temp[secStart++];
                 continue;
             }
-            array[start++] = part2[index2++];
-        }
-        
-        // 4.当循环完毕，有一拷贝数组必然已整理完毕，循环整理剩下的数组
-        while (index1 != length1) {
-            array[start++] = part1[index1++];
-        }
-        while (index2 != length2) {
-            array[start++] = part2[index2++];
+            // 后半段完成
+            if (secStart == temp.length) {
+                array[start] = temp[firStart++];
+                continue;
+            }
+            // 比较前后两值大小
+            // 前半段较小
+            if (temp[firStart] < temp[secStart]) {
+                array[start] = temp[firStart++];
+                continue;
+            }
+            // 后半段较小
+            array[start] = temp[secStart++];
         }
     }
     

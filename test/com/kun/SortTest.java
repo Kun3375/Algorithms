@@ -29,9 +29,10 @@ public class SortTest {
     
     @BeforeClass
     public static void init() {
-        arrayLength = 100000;
+        arrayLength = 10000;
         start = 0;
         end = arrayLength;
+        swapTimes =  100;
         
         oriNormalArray = new int[arrayLength];
         Random random = new Random();
@@ -114,10 +115,10 @@ public class SortTest {
     public void recursiveMergeSort() {
         startTime = Instant.now();
         Sort.recursiveMergeSort(normalArray);
-        System.out.println("bubble sort spent: " + Duration.between(startTime, Instant.now()));
+        System.out.println("recursive merge sort spent: " + Duration.between(startTime, Instant.now()));
         
         startTime = Instant.now();
         Sort.recursiveMergeSort(nearlyArray);
-        System.out.println("bubble sort spent for nearly：" + Duration.between(startTime, Instant.now()));
+        System.out.println("recursive merge sort spent for nearly：" + Duration.between(startTime, Instant.now()));
     }
 }
