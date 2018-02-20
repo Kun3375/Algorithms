@@ -29,7 +29,7 @@ public class SortTest {
     
     @BeforeClass
     public static void init() {
-        arrayLength = 1000000;
+        arrayLength = 10000;
         start = 0;
         end = arrayLength;
         swapTimes =  100;
@@ -56,11 +56,11 @@ public class SortTest {
             swapTimes--;
         } while (swapTimes > 0);
     
-//        for (int i : oriNormalArray) {
-//            System.out.print(i);
-//            System.out.print(", ");
-//        }
-//        System.out.println();
+        for (int i : oriNormalArray) {
+            System.out.print(i);
+            System.out.print(", ");
+        }
+        System.out.println();
     }
     
     @Before
@@ -70,7 +70,7 @@ public class SortTest {
         
     }
     
-//    @After
+    @After
     public void tearDown() {
         for (int i : normalArray) {
             System.out.print(i);

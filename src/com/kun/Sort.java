@@ -87,8 +87,8 @@ public class Sort {
      * @param array 被排序数组
      */
     public static void recursiveMergeSort(int[] array) {
-        recursiveMergeSortPart(array, 0, array.length / 2);
-        recursiveMergeSortPart(array, array.length / 2, array.length);
+        recursiveMergeSortPart(array, 0, array.length >> 1);
+        recursiveMergeSortPart(array, array.length >> 1, array.length);
         mergeSortMerge(array, 0, array.length >> 1, array.length);
     }
     
@@ -179,6 +179,9 @@ public class Sort {
      */
     public static void iterationMergeSort(int[] array) {
         
+        // 优化，可以先不看
+        int flag = -1;
+        
         int length = array.length;
         // 可优化，数组较小时可以使用插入排序
         // 2，4，8... 依次归并
@@ -196,14 +199,44 @@ public class Sort {
                 if (length - j == 1) {
                     continue;
                 }
-                // 尾端如果在上一轮循环中处理完成（2 的倍数，且不等当前长度）
-                if (length - j != i && ((length - j) & 1) == 0) {
+                // 尾端在上一轮循环中处理完成（2 的 n 次方，且不等当前长度）
+                if (length - j != i && ((length - j) & (length - j - 1)) == 0) {
+                    continue;
+                }
+                // 尾端在上一轮循环中处理完成
+                if (flag == j) {
                     continue;
                 }
                 // 尾端归并（不对称）
-                mergeSortMerge(array, j, j + (i >> 1), length);
+                // 使用 getPowerOfTwo 代替 (length - j) / 2，避免在未优化时出现问题
+                // 举例：长度 13，归并 8 + 5，5 = 4 + 1 而非 2 + 3
+                mergeSortMerge(array, j, j + (getPowerOfTwo(length - j)), length);
+                // 用尾端起始索引更新尾端处理标记
+                flag = j;
             }
         }
+    }
+    
+    /**
+     * 返回一个小于等于当前值的 2 的 n 次幂
+     * 算法参考 {@link java.util.HashMap#tableSizeFor(int)}
+     *
+     * @param datum 当前值
+     * @return power of two
+     */
+    private static int getPowerOfTwo(int datum) {
+        int n = datum >> 1;
+        n |= n >>> 1;
+        n |= n >>> 2;
+        n |= n >>> 4;
+        n |= n >>> 8;
+        n |= n >>> 16;
+        // 真正的入口应避免错误的情况
+        return n == Integer.MAX_VALUE ? (Integer.MAX_VALUE >> 1) + 1 : n + 1;
+    }
+    
+    public static void main(String[] args) {
+        System.out.println(getPowerOfTwo(33));
     }
     
 }
