@@ -29,7 +29,7 @@ public class SortTest {
     
     @BeforeClass
     public static void init() {
-        arrayLength = 50000;
+        arrayLength = 5000000;
         start = 0;
         end = arrayLength;
         swapTimes =  100;

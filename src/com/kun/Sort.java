@@ -136,6 +136,7 @@ public class Sort {
                     array[middle - delta] = temp;
                 }
                 array[start] =  copy;
+                return;
             }
             // 对称
             for(int delta = 0; start + delta < middle; delta++) {
@@ -144,6 +145,7 @@ public class Sort {
                 array[newMiddle] = array[newStart] ^ array[newMiddle];
                 array[newStart] = array[newStart] ^ array[newMiddle];
             }
+            return;
         }
         // ********************************************************
         
@@ -174,14 +176,6 @@ public class Sort {
             }
             // 后半段较小
             array[start] = temp[secStart++];
-        }
-    }
-    
-    public static void main(String[] args) {
-        int[] ints = {4, 5, 1, 2, 3};
-        recursiveMergeSort(ints);
-        for (int anInt : ints) {
-            System.out.println(anInt);
         }
     }
     
