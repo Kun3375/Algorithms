@@ -82,64 +82,57 @@ public class Sort {
     }
     
     /**
-     * 归并排序，使用二分法拆分数组，时间复杂度 O(N*logN)
+     * 归并排序，使用二分法拆分数组，时间复杂度 O(N*logN)，递归实现
      *
-     * @param array
+     * @param array 被排序数组
      */
     public static void recursiveMergeSort(int[] array) {
         recursiveMergeSortPart(array, 0, array.length / 2);
         recursiveMergeSortPart(array, array.length / 2, array.length);
-        recursiveMergeSortMerge(array, 0, array.length);
+        mergeSortMerge(array, 0, array.length >> 1, array.length);
     }
     
     /**
      * 对需要排序的数组段落继续二分段，递归排序
      *
-     * @param array 被排序数组段落
+     * @param array 被排序数组
      * @param start 起始索引
      * @param end   结束索引（不包含）
      */
     private static void recursiveMergeSortPart(int[] array, int start, int end) {
         
-        // 可优化方案，需要排序的段落如果较为小时，使用插入排序
         if (start + 1 == end) {
             return;
         }
         
+        int middle = ((end - start) >> 1) + start;
         // 递归步骤
-        recursiveMergeSortPart(array, start, (end - start) / 2 + start);
-        recursiveMergeSortPart(array, (end - start) / 2 + start, end);
+        recursiveMergeSortPart(array, start, middle);
+        recursiveMergeSortPart(array, middle, end);
         // 合并有序段
-        recursiveMergeSortMerge(array, start, end);
+        mergeSortMerge(array, start, middle, end);
     }
     
-    private static void recursiveMergeSortMerge(int[] array, int start, int end) {
+    /**
+     * 对数组中区间内两个有序段落进行合并
+     *
+     * @param array 被排序数组
+     * @param start 起始索引
+     * @param end   结束索引（不包含）
+     */
+    private static void mergeSortMerge(int[] array, int start, int middle, int end) {
         
         // ************************** 优化 **************************
         // 两部分之间有有序性规律
         // 如果某一段起始值比另一段结束值更大，直接拼接
-        int middle = (end - start) / 2 + start;
         // 第二段更大的情况，直接返回
         if (array[middle] > array[middle - 1]) {
             return;
         }
-        // 第一段更大，对调两部分
-        if (array[start] > array[end - 1]) {
-            // 两段不对称  5 6 7 1 2 3 4
-            //            5 6 7 4 2 3 7   1
-            //            5 6 3 4 2 6 7   1
-            if (((end - start) & 1) == 1) {
-                int copy = array[middle];
-                for(int delta = 0; start + delta < middle; delta++) {
-                    int temp = array[end - 1 - delta];
-                    array[end - 1 -delta] = array[middle - 1 - delta];
-                    array[middle - delta] = temp;
-                }
-                array[start] =  copy;
-                return;
-            }
-            // 对称
-            for(int delta = 0; start + delta < middle; delta++) {
+        // 第一段更大，对调两部分，为了通用，仅作两端对称情况下啊的优化
+        if (array[start] > array[end - 1] && (middle - start == end - middle)) {
+            
+            for (int delta = 0; start + delta < middle; delta++) {
                 int newStart = start + delta, newMiddle = middle + delta;
                 array[newStart] = array[newStart] ^ array[newMiddle];
                 array[newMiddle] = array[newStart] ^ array[newMiddle];
@@ -153,7 +146,7 @@ public class Sort {
         int[] temp = Arrays.copyOfRange(array, start, end);
         // 2.这个副本有着有序的前后两个部分，记录下起始索引，中间索引（第二段的起始索引）
         int firStart = 0;
-        middle = temp.length / 2;
+        middle -= start;
         int secStart = middle;
         
         // 3.只要需要排序的段落没有完全排序完，就执行循环
@@ -176,6 +169,40 @@ public class Sort {
             }
             // 后半段较小
             array[start] = temp[secStart++];
+        }
+    }
+    
+    /**
+     * 归并排序，迭代实现
+     *
+     * @param array 被排序数组
+     */
+    public static void iterationMergeSort(int[] array) {
+        
+        int length = array.length;
+        // 可优化，数组较小时可以使用插入排序
+        // 2，4，8... 依次归并
+        int i = 2;
+        // 之所以 i 值范围在 length 两倍之内，是因为需要保证最后一次递归
+        for (; i < length << 1; i <<= 1) {
+            for (int j = 0; j < length; j += i) {
+                int end = j + i;
+                // 正常归并
+                if (end <= length) {
+                    mergeSortMerge(array, j, j + (i >> 1), end);
+                    continue;
+                }
+                // 尾端长度为 1 不需要处理
+                if (length - j == 1) {
+                    continue;
+                }
+                // 尾端如果在上一轮循环中处理完成（2 的倍数，且不等当前长度）
+                if (length - j != i && ((length - j) & 1) == 0) {
+                    continue;
+                }
+                // 尾端归并（不对称）
+                mergeSortMerge(array, j, j + (i >> 1), length);
+            }
         }
     }
     
