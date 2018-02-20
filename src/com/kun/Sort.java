@@ -9,7 +9,7 @@ import java.util.Arrays;
 public class Sort {
     
     /**
-     * 选择排序，时间复杂度稳定 O(n^2)
+     * 选择排序，时间复杂度稳定 O(N^2)
      * 对任何类型的数列，耗时稳定，每次需要完整遍历
      *
      * @param array 被排序数组
@@ -36,8 +36,8 @@ public class Sort {
     }
     
     /**
-     * 插入排序，时间复杂度 O(n^2)
-     * 对于原数列近乎有序的情况下，十分迅速，趋向 O(n)，这种情况下为所有排序第一选择
+     * 插入排序，时间复杂度 O(N^2)
+     * 对于原数列近乎有序的情况下，十分迅速，趋向 O(N)，这种情况下为所有排序第一选择
      *
      * @param array 原被排序数组
      */
@@ -72,7 +72,7 @@ public class Sort {
     }
     
     /**
-     * 冒泡排序，时间复杂度 O(n^2)
+     * 冒泡排序，时间复杂度 O(N^2)
      * 对于原数列近乎有序的情况下，变现比乱序数列的情况好
      * 由于交换元素的次数频繁，效率相对其他数列差，仅在原数列近乎有序的情况下，接近选择排序，远远不及插入排序
      * 不考虑的算法
@@ -100,8 +100,8 @@ public class Sort {
      * @param array 被排序数组
      */
     public static void recursiveMergeSort(int[] array) {
-        recursiveMergeSortPart(array, 0, array.length >> 1);
-        recursiveMergeSortPart(array, array.length >> 1, array.length);
+        recursiveMergeSortPartition(array, 0, array.length >> 1);
+        recursiveMergeSortPartition(array, array.length >> 1, array.length);
         mergeSortMerge(array, 0, array.length >> 1, array.length);
     }
     
@@ -112,7 +112,7 @@ public class Sort {
      * @param start 起始索引
      * @param end   结束索引（不包含）
      */
-    private static void recursiveMergeSortPart(int[] array, int start, int end) {
+    private static void recursiveMergeSortPartition(int[] array, int start, int end) {
         
         // 递归深处的小数组使用插入排序优化
         if (start + 16 >= end) {
@@ -126,8 +126,8 @@ public class Sort {
         
         int middle = ((end - start) >> 1) + start;
         // 递归步骤
-        recursiveMergeSortPart(array, start, middle);
-        recursiveMergeSortPart(array, middle, end);
+        recursiveMergeSortPartition(array, start, middle);
+        recursiveMergeSortPartition(array, middle, end);
         // 合并有序段
         mergeSortMerge(array, start, middle, end);
     }
@@ -204,12 +204,87 @@ public class Sort {
             insertionSort(array, i, (i += 16) < length ? i : length);
         }
         // 1，2，4，8... 依次归并
+        int middle;
         for (int partitionSize = 16; partitionSize <= length; partitionSize <<= 1) {
             for (int index = 0; index < length - partitionSize; index += partitionSize << 1) {
-                int middle = index + partitionSize;
+                middle = index + partitionSize;
                 mergeSortMerge(array, index, middle, middle + partitionSize < length ? middle + partitionSize : length);
             }
         }
+    }
+    
+    /**
+     * 快速排序，时间复杂度 O(N*logN)，通常速度极快，最优选择
+     * 在不进行随机化优化的情况下，对几近有序的数组排序极其慢，退化成 O(N^2)
+     * 如果进行随机化优化，算法稳定性提高，但是会略慢于不优化的情况
+     *
+     * @param array 被排序数组
+     */
+    public static void quickSort(int[] array) {
+        quickSortCore(array, 0, array.length);
+    }
+    
+    /**
+     * 对数组的指定区间进行整理
+     *
+     * @param array 被排序的数组
+     * @param start 排序区间起始索引
+     * @param end   排序区间结束索引（不包含）
+     */
+    private static void quickSortCore(int[] array, int start, int end) {
+        
+        // 递归深处的小数组使用插入排序优化
+        if (start + 16 >= end) {
+            insertionSort(array, start, end);
+            return;
+        }
+        
+        //        if (start + 1 >= end) {
+        //            return;
+        //        }
+        
+        // 将 start 处的值插入到理想位置，返回其索引
+        int middle = quickSortPartition(array, start, end);
+        // 递归地处理左右两部分
+        quickSortCore(array, start, middle);
+        quickSortCore(array, middle + 1, end);
+    }
+    
+    /**
+     * 快速排序分片
+     *
+     * @param array 被排序数组
+     * @param start 需要分片的起始索引
+     * @param end   需要分片的结束索引（不包含）
+     * @return 中间值（原初始索引处的值 array[start]）在分片完成后的索引
+     */
+    private static int quickSortPartition(int[] array, int start, int end) {
+        
+        int temp;
+        // 优化，首项随机化处理（如果可能需要处理近乎有序的数组）
+        int randomIndex = (int) (Math.random() * (end - start) + start);
+        temp = array[randomIndex];
+        array[randomIndex] = array[start];
+        array[start] = temp;
+        
+        // 该值用来记录中间值的索引
+        int middle = start;
+        // 遍历需要分片的区间
+        for (int i = start + 1; i < end; i++) {
+            // 如果出现某个值比 array[start] 更小的情况
+            // 需要将其和第二段（大于 array[start] 的片区）的第一个值交换
+            // 同时更新 middle
+            if (array[i] < array[start]) {
+                temp = array[++middle];
+                array[middle] = array[i];
+                array[i] = temp;
+            }
+        }
+        // 遍历完成后将 array[start] 插入至理想位置，返回其索引
+        temp = array[start];
+        array[start] = array[middle];
+        array[middle] = temp;
+        return middle;
     }
     
 }
