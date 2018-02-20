@@ -29,7 +29,7 @@ public class SortTest {
     
     @BeforeClass
     public static void init() {
-        arrayLength = 10000;
+        arrayLength = 100000;
         start = 0;
         end = arrayLength;
         swapTimes =  100;
@@ -56,11 +56,11 @@ public class SortTest {
             swapTimes--;
         } while (swapTimes > 0);
     
-        for (int i : oriNormalArray) {
-            System.out.print(i);
-            System.out.print(", ");
-        }
-        System.out.println();
+//        for (int i : oriNormalArray) {
+//            System.out.print(i);
+//            System.out.print(", ");
+//        }
+//        System.out.println();
     }
     
     @Before
@@ -138,4 +138,5 @@ public class SortTest {
         Sort.iterationMergeSort(nearlyArray);
         System.out.println("iteration merge sort spent for nearly：" + Duration.between(startTime, Instant.now()));
     }
+    
 }

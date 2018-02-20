@@ -42,19 +42,31 @@ public class Sort {
      * @param array 原被排序数组
      */
     public static void insertionSort(int[] array) {
-        // 1.从头遍历数组
-        int temp;
-        for (int i = 0; i < array.length; i++) {
-            // 2.将当前值保存
-            temp = array[i];
-            // 3.记录当前索引
-            int j = i;
-            // 4.倒叙遍历之前的已排序数组，发现超过 temp 时向后顺移，腾出位置，同时索引减 1
-            for (; j > 0 && array[j - 1] > temp; j--) {
-                array[j] = array[j - 1];
+        insertionSort(array, 0, array.length);
+    }
+    
+    /**
+     * 对数组部分区间进行插入排序
+     *
+     * @param array 被排序数组
+     * @param start 排序起始索引
+     * @param end   排序结束索引（不包含）
+     */
+    public static void insertionSort(int[] array, int start, int end) {
+        int tempValue;
+        int tempIndex;
+        for (; start < end; start++) {
+            // 1.将当前值保存
+            tempValue = array[start];
+            // 2.记录当前索引
+            tempIndex = start;
+            // 3.倒叙遍历之前的已排序数组，发现超过 tempValue 时向后顺移，腾出位置，同时索引减 1
+            for (; tempIndex > 0 && array[tempIndex - 1] > tempValue; tempIndex--) {
+                // 向后挪
+                array[tempIndex] = array[tempIndex - 1];
             }
-            // 5.若不在有更大项，将原保存的插入值插入
-            array[j] = temp;
+            // 4.插入
+            array[tempIndex] = tempValue;
         }
     }
     
@@ -179,64 +191,15 @@ public class Sort {
      */
     public static void iterationMergeSort(int[] array) {
         
-        // 优化，可以先不看
-        int flag = -1;
-        
         int length = array.length;
-        // 可优化，数组较小时可以使用插入排序
+        
         // 2，4，8... 依次归并
-        int i = 2;
-        // 之所以 i 值范围在 length 两倍之内，是因为需要保证最后一次递归
-        for (; i < length << 1; i <<= 1) {
-            for (int j = 0; j < length; j += i) {
-                int end = j + i;
-                // 正常归并
-                if (end <= length) {
-                    mergeSortMerge(array, j, j + (i >> 1), end);
-                    continue;
-                }
-                // 尾端长度为 1 不需要处理
-                if (length - j == 1) {
-                    continue;
-                }
-                // 尾端在上一轮循环中处理完成（2 的 n 次方，且不等当前长度）
-                if (length - j != i && ((length - j) & (length - j - 1)) == 0) {
-                    continue;
-                }
-                // 尾端在上一轮循环中处理完成
-                if (flag == j) {
-                    continue;
-                }
-                // 尾端归并（不对称）
-                // 使用 getPowerOfTwo 代替 (length - j) / 2，避免在未优化时出现问题
-                // 举例：长度 13，归并 8 + 5，5 = 4 + 1 而非 2 + 3
-                mergeSortMerge(array, j, j + (getPowerOfTwo(length - j)), length);
-                // 用尾端起始索引更新尾端处理标记
-                flag = j;
+        for (int partitionSize = 1; partitionSize <= length; partitionSize <<= 1) {
+            for (int index = 0; index < length - partitionSize; index += partitionSize << 1) {
+                int middle = index + partitionSize;
+                mergeSortMerge(array, index, middle, middle + partitionSize < length ? middle + partitionSize : length);
             }
         }
-    }
-    
-    /**
-     * 返回一个小于等于当前值的 2 的 n 次幂
-     * 算法参考 {@link java.util.HashMap#tableSizeFor(int)}
-     *
-     * @param datum 当前值
-     * @return power of two
-     */
-    private static int getPowerOfTwo(int datum) {
-        int n = datum >> 1;
-        n |= n >>> 1;
-        n |= n >>> 2;
-        n |= n >>> 4;
-        n |= n >>> 8;
-        n |= n >>> 16;
-        // 真正的入口应避免错误的情况
-        return n == Integer.MAX_VALUE ? (Integer.MAX_VALUE >> 1) + 1 : n + 1;
-    }
-    
-    public static void main(String[] args) {
-        System.out.println(getPowerOfTwo(33));
     }
     
 }
