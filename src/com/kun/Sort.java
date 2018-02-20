@@ -47,6 +47,7 @@ public class Sort {
     
     /**
      * 对数组部分区间进行插入排序
+     * 可以适用于其他高级算法的优化
      *
      * @param array 被排序数组
      * @param start 排序起始索引
@@ -55,13 +56,13 @@ public class Sort {
     public static void insertionSort(int[] array, int start, int end) {
         int tempValue;
         int tempIndex;
-        for (; start < end; start++) {
+        for (int index = start; index < end; index++) {
             // 1.将当前值保存
-            tempValue = array[start];
+            tempValue = array[index];
             // 2.记录当前索引
-            tempIndex = start;
+            tempIndex = index;
             // 3.倒叙遍历之前的已排序数组，发现超过 tempValue 时向后顺移，腾出位置，同时索引减 1
-            for (; tempIndex > 0 && array[tempIndex - 1] > tempValue; tempIndex--) {
+            for (; tempIndex > start && array[tempIndex - 1] > tempValue; tempIndex--) {
                 // 向后挪
                 array[tempIndex] = array[tempIndex - 1];
             }
@@ -113,9 +114,15 @@ public class Sort {
      */
     private static void recursiveMergeSortPart(int[] array, int start, int end) {
         
-        if (start + 1 == end) {
+        // 递归深处的小数组使用插入排序优化
+        if (start + 16 >= end) {
+            insertionSort(array, start, end);
             return;
         }
+        
+        //        if (start + 1 == end) {
+        //            return;
+        //        }
         
         int middle = ((end - start) >> 1) + start;
         // 递归步骤
@@ -192,9 +199,12 @@ public class Sort {
     public static void iterationMergeSort(int[] array) {
         
         int length = array.length;
-        
-        // 2，4，8... 依次归并
-        for (int partitionSize = 1; partitionSize <= length; partitionSize <<= 1) {
+        // 最小单元使用插入排序优化
+        for (int i = 0; i < length; ) {
+            insertionSort(array, i, (i += 16) < length ? i : length);
+        }
+        // 1，2，4，8... 依次归并
+        for (int partitionSize = 16; partitionSize <= length; partitionSize <<= 1) {
             for (int index = 0; index < length - partitionSize; index += partitionSize << 1) {
                 int middle = index + partitionSize;
                 mergeSortMerge(array, index, middle, middle + partitionSize < length ? middle + partitionSize : length);
