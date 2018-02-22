@@ -4,7 +4,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import sun.security.util.Length;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -18,9 +17,6 @@ import java.util.Random;
 public class SortTest {
     
     private static int arrayLength;
-    private static int start;
-    private static int end;
-    private static int swapTimes;
     private static int[] oriNormalArray;
     private static int[] oriNearlyArray;
     private int[] normalArray;
@@ -29,10 +25,11 @@ public class SortTest {
     
     @BeforeClass
     public static void init() {
-        arrayLength = 5000000;
-        start = 0;
-        end = arrayLength;
-        swapTimes =  100;
+        arrayLength = 20;
+        int start = 0;
+        int end = arrayLength;
+//        int end = 10;
+        int swapTimes =  10;
         
         oriNormalArray = new int[arrayLength];
         Random random = new Random();
@@ -70,7 +67,7 @@ public class SortTest {
         
     }
     
-//    @After
+    @After
     public void tearDown() {
         for (int i : normalArray) {
             System.out.print(i);
@@ -140,14 +137,25 @@ public class SortTest {
     }
     
     @Test
-    public void quickSort() {
+    public void quickSortSingleWay() {
         startTime = Instant.now();
-        Sort.quickSort(normalArray);
+        Sort.quickSortSingleWay(normalArray);
         System.out.println("quick sort spent: " + Duration.between(startTime, Instant.now()));
     
         startTime = Instant.now();
-        Sort.quickSort(nearlyArray);
+        Sort.quickSortSingleWay(nearlyArray);
         System.out.println("quick sort spent for nearly：" + Duration.between(startTime, Instant.now()));
+    }
+    
+    @Test
+    public void quickSortDoubleWay() {
+        startTime = Instant.now();
+        Sort.quickSortDoubleWay(normalArray);
+        System.out.println("quick sort double way spent: " + Duration.between(startTime, Instant.now()));
+    
+        startTime = Instant.now();
+        Sort.quickSortDoubleWay(nearlyArray);
+        System.out.println("quick sort double way spent for nearly：" + Duration.between(startTime, Instant.now()));
     }
     
 }

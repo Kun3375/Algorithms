@@ -220,8 +220,8 @@ public class Sort {
      *
      * @param array 被排序数组
      */
-    public static void quickSort(int[] array) {
-        quickSortCore(array, 0, array.length);
+    public static void quickSortSingleWay(int[] array) {
+        quickSortSingleWayCore(array, 0, array.length);
     }
     
     /**
@@ -231,23 +231,23 @@ public class Sort {
      * @param start 排序区间起始索引
      * @param end   排序区间结束索引（不包含）
      */
-    private static void quickSortCore(int[] array, int start, int end) {
+    private static void quickSortSingleWayCore(int[] array, int start, int end) {
         
         // 递归深处的小数组使用插入排序优化
-        if (start + 16 >= end) {
-            insertionSort(array, start, end);
-            return;
-        }
-        
-        //        if (start + 1 >= end) {
+        //        if (start + 16 >= end) {
+        //            insertionSort(array, start, end);
         //            return;
         //        }
+        
+        if (start + 1 >= end) {
+            return;
+        }
         
         // 将 start 处的值插入到理想位置，返回其索引
         int middle = quickSortPartition(array, start, end);
         // 递归地处理左右两部分
-        quickSortCore(array, start, middle);
-        quickSortCore(array, middle + 1, end);
+        quickSortSingleWayCore(array, start, middle);
+        quickSortSingleWayCore(array, middle + 1, end);
     }
     
     /**
@@ -287,4 +287,109 @@ public class Sort {
         return middle;
     }
     
+    /**
+     * 双路快速排序，对重复值较多的数列也可以很好的发挥性能
+     *
+     * @param array 被排序数组
+     */
+    public static void quickSortDoubleWay(int[] array) {
+        quickSortDoubleWayCore(array, 0, array.length);
+    }
+    
+    /**
+     * 对数组的指定区间进行整理
+     *
+     * @param array 被排序的数组
+     * @param start 排序区间起始索引
+     * @param end   排序区间结束索引（不包含）
+     */
+    private static void quickSortDoubleWayCore(int[] array, int start, int end) {
+        
+        // 递归深处的小数组使用插入排序优化
+        if (start + 16 >= end) {
+            insertionSort(array, start, end);
+            return;
+        }
+        
+        //        if (start + 1 >= end) {
+        //            return;
+        //        }
+        
+        // 将 start 处的值插入到理想位置，返回其索引
+        int middle = quickSortDoubleWayPartition(array, start, end);
+        // 递归地处理左右两部分
+        quickSortDoubleWayCore(array, start, middle);
+        quickSortDoubleWayCore(array, middle + 1, end);
+    }
+    
+    /**
+     * 双路块排的分片方案
+     * @param array 被排序数组
+     * @param start 需要分片的起始索引
+     * @param end   需要分片的结束索引（不包含）
+     * @return 中间值（原初始索引处的值 array[start]）在分片完成后的索引
+     */
+    private static int quickSortDoubleWayPartition(int[] array, int start, int end) {
+
+        int temp;
+        // 优化，首项随机化处理（如果可能需要处理近乎有序的数组）
+//        int randomIndex = (int) (Math.random() * (end - start) + start);
+//        temp = array[randomIndex];
+//        array[randomIndex] = array[start];
+//        array[start] = temp;
+        
+        // 初始化左右索引及基准值的索引
+        int i = start;
+        int j = end;
+        int middleIndex = start;
+        while (true) {
+            // 已遍历结束的情况
+            if (i >= j) {
+                break;
+            }
+            // 寻找更大值
+            while (true) {
+                if (++i > j || array[i] > array[start]) {
+                    break;
+                }
+            }
+            // 寻找更小值
+            while (true) {
+                if (--j < i || array[j] < array[start]) {
+                    break;
+                }
+            }
+            // 交换两个值至合理位置
+            temp = array[i];
+            array[i] = array[j];
+            array[j] = temp;
+            middleIndex = i;
+
+        }
+        // 移动基准值
+        temp = array[start];
+        array[start] = array[i];
+        array[i] = temp;
+        return middleIndex;
+    }
+    
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
