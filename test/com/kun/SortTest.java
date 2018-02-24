@@ -25,10 +25,10 @@ public class SortTest {
     
     @BeforeClass
     public static void init() {
-        arrayLength = 5;
+        arrayLength = 50000;
         int start = 0;
-        int end = arrayLength;
-//        int end = 10;
+//        int end = arrayLength;
+        int end = 10;
         int swapTimes =  10;
         
         oriNormalArray = new int[arrayLength];

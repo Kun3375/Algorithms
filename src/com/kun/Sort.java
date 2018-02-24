@@ -288,7 +288,8 @@ public class Sort {
     }
     
     /**
-     * 双路快速排序，对重复值较多的数列也可以很好的发挥性能
+     * 双路快速排序，从两端分别遍历，且可以很好地分散相等的值
+     * 对重复值较多的数列也可以很好的发挥性能
      *
      * @param array 被排序数组
      */
@@ -324,15 +325,16 @@ public class Sort {
     
     /**
      * 双路块排的分片方案
+     *
      * @param array 被排序数组
      * @param start 需要分片的起始索引
      * @param end   需要分片的结束索引（不包含）
      * @return 中间值（原初始索引处的值 array[start]）在分片完成后的索引
      */
     private static int quickSortDoubleWayPartition(int[] array, int start, int end) {
-
+        
         int temp;
-//         优化，首项随机化处理（如果可能需要处理近乎有序的数组）
+        //         优化，首项随机化处理（如果可能需要处理近乎有序的数组）
         int randomIndex = (int) (Math.random() * (end - start) + start);
         temp = array[randomIndex];
         array[randomIndex] = array[start];
@@ -342,12 +344,15 @@ public class Sort {
         int i = start + 1;
         int j = end - 1;
         while (true) {
+            // 左右条件，必须使用 < 或 >，不能取等
+            // 因为如果取等，在大量重复值的情况下，会导致某一循环过长，进而拆分不均匀，丧失了双路排序的初衷
+            // 不取等的情况下，有一定概率两端同时交换一个相等的值
             // 寻找更大值
-            while (i < end && array[i] <= array[start]) {
+            while (i < end && array[i] < array[start]) {
                 i++;
             }
             // 寻找更小值
-            while (j > start && array[j] >= array[start]) {
+            while (j > start && array[j] > array[start]) {
                 j--;
             }
             // 已遍历结束的情况
@@ -360,7 +365,7 @@ public class Sort {
             array[j] = temp;
             i++;
             j--;
-
+            
         }
         // 移动基准值
         temp = array[start];
