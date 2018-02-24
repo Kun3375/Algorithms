@@ -289,7 +289,8 @@ public class Sort {
     
     /**
      * 双路快速排序，从两端分别遍历，且可以很好地分散相等的值
-     * 对重复值较多的数列也可以很好的发挥性能
+     * 对重复值较多的数列也可以较好的发挥性能（慢于三路快排）
+     * 其他情况在三种快排中都较好
      *
      * @param array 被排序数组
      */
@@ -324,7 +325,7 @@ public class Sort {
     }
     
     /**
-     * 双路块排的分片方案
+     * 双路快排的分片方案
      *
      * @param array 被排序数组
      * @param start 需要分片的起始索引
@@ -334,7 +335,7 @@ public class Sort {
     private static int quickSortDoubleWayPartition(int[] array, int start, int end) {
         
         int temp;
-        //         优化，首项随机化处理（如果可能需要处理近乎有序的数组）
+        // 优化，首项随机化处理（如果可能需要处理近乎有序的数组）
         int randomIndex = (int) (Math.random() * (end - start) + start);
         temp = array[randomIndex];
         array[randomIndex] = array[start];
@@ -372,6 +373,81 @@ public class Sort {
         array[start] = array[j];
         array[j] = temp;
         return j;
+    }
+    
+    /**
+     * 三路快速排序，实现方式与单路快速排序类似，但是区分相等值的情况
+     * 大量重复值的情况，可以比单路快排，双路快排极大地提高效率
+     * 在其他情况尤其是近乎有序的数组处理上略慢
+     *
+     * @param array 被排序数组
+     */
+    public static void quickSortTripleWay(int[] array) {
+        quickSortTripleWayCore(array, 0, array.length);
+    }
+    
+    /**
+     * 三路快速排序递归部分
+     *
+     * @param array 被排序数组
+     * @param start 排序区间开始索引
+     * @param end 排序区间结束索引（不包含）
+     */
+    private static void quickSortTripleWayCore(int[] array, int start, int end) {
+    
+        // 递归深处的小数组使用插入排序优化
+        if (start + 16 >= end) {
+            insertionSort(array, start, end);
+            return;
+        }
+        
+//        if (end - start <= 1) {
+//            return;
+//        }
+    
+        int temp;
+        // 优化，首项随机化处理（如果可能需要处理近乎有序的数组）
+        int randomIndex = (int) (Math.random() * (end - start) + start);
+        temp = array[randomIndex];
+        array[randomIndex] = array[start];
+        array[start] = temp;
+        
+        // 分片实现
+        int lt = start + 1;
+        int gt = end;
+        for(int i = lt; i < gt; ) {
+            if (array[i] < array[start]) {
+                // 把最前一个相等值换至当前位置，更小值换过去相当于拼接在第一区间的末尾
+                temp = array[i];
+                array[i] = array[lt];
+                array[lt] = temp;
+                // 相等值的开始索引向后挪
+                lt++;
+                i++;
+                continue;
+            }
+            if (array[i] > array[start]){
+                // 扩大更大值的区间
+                gt--;
+                // 把这个大值交换进去
+                temp = array[i];
+                array[i] = array[gt];
+                array[gt] = temp;
+                // 不需要 i++，交换过来一个未判断的值
+                continue;
+            }
+            // 如果值相等，什么也不用做，继续遍历（i 前面的是相等的区间）
+            i++;
+        }
+        // 将首值与最后一个小值交换即可
+        temp = array[start];
+        array[start] = array[lt - 1];
+        array[lt - 1] = temp;
+        
+        // 递归过程
+        // 排序小于和大于首值的区间，不用再次处理等于首值的元素了
+        quickSortTripleWayCore(array, start, lt);
+        quickSortTripleWayCore(array, gt, end);
     }
     
 }

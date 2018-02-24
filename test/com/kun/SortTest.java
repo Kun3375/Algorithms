@@ -25,10 +25,10 @@ public class SortTest {
     
     @BeforeClass
     public static void init() {
-        arrayLength = 50000;
+        arrayLength = 5000000;
         int start = 0;
-//        int end = arrayLength;
-        int end = 10;
+        int end = arrayLength;
+//        int end = 10;
         int swapTimes =  10;
         
         oriNormalArray = new int[arrayLength];
@@ -67,7 +67,7 @@ public class SortTest {
         
     }
     
-    @After
+//    @After
     public void tearDown() {
         for (int i : normalArray) {
             System.out.print(i);
@@ -156,6 +156,17 @@ public class SortTest {
         startTime = Instant.now();
         Sort.quickSortDoubleWay(nearlyArray);
         System.out.println("quick sort double way spent for nearly：" + Duration.between(startTime, Instant.now()));
+    }
+    
+    @Test
+    public void quickSortTripleWay() {
+        startTime = Instant.now();
+        Sort.quickSortTripleWay(normalArray);
+        System.out.println("quick sort triple way spent: " + Duration.between(startTime, Instant.now()));
+        
+        startTime = Instant.now();
+        Sort.quickSortTripleWay(nearlyArray);
+        System.out.println("quick sort triple way spent for nearly：" + Duration.between(startTime, Instant.now()));
     }
     
 }
