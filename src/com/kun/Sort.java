@@ -234,14 +234,14 @@ public class Sort {
     private static void quickSortSingleWayCore(int[] array, int start, int end) {
         
         // 递归深处的小数组使用插入排序优化
-        //        if (start + 16 >= end) {
-        //            insertionSort(array, start, end);
-        //            return;
-        //        }
-        
-        if (start + 1 >= end) {
+        if (start + 16 >= end) {
+            insertionSort(array, start, end);
             return;
         }
+        
+//        if (start + 1 >= end) {
+//            return;
+//        }
         
         // 将 start 处的值插入到理想位置，返回其索引
         int middle = quickSortPartition(array, start, end);
@@ -313,9 +313,9 @@ public class Sort {
             return;
         }
         
-        //        if (start + 1 >= end) {
-        //            return;
-        //        }
+//        if (start + 1 >= end) {
+//            return;
+//        }
         
         // 将 start 处的值插入到理想位置，返回其索引
         int middle = quickSortDoubleWayPartition(array, start, end);
@@ -378,7 +378,7 @@ public class Sort {
     /**
      * 三路快速排序，实现方式与单路快速排序类似，但是区分相等值的情况
      * 大量重复值的情况，可以比单路快排，双路快排极大地提高效率
-     * 在其他情况尤其是近乎有序的数组处理上略慢
+     * 在其他情况（因为交换次数相对多一点）尤其是近乎有序的数组处理上略慢
      *
      * @param array 被排序数组
      */

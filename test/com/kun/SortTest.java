@@ -25,7 +25,7 @@ public class SortTest {
     
     @BeforeClass
     public static void init() {
-        arrayLength = 5000000;
+        arrayLength = 7000000;
         int start = 0;
         int end = arrayLength;
 //        int end = 10;
