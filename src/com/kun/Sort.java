@@ -332,45 +332,41 @@ public class Sort {
     private static int quickSortDoubleWayPartition(int[] array, int start, int end) {
 
         int temp;
-        // 优化，首项随机化处理（如果可能需要处理近乎有序的数组）
-//        int randomIndex = (int) (Math.random() * (end - start) + start);
-//        temp = array[randomIndex];
-//        array[randomIndex] = array[start];
-//        array[start] = temp;
+//         优化，首项随机化处理（如果可能需要处理近乎有序的数组）
+        int randomIndex = (int) (Math.random() * (end - start) + start);
+        temp = array[randomIndex];
+        array[randomIndex] = array[start];
+        array[start] = temp;
         
         // 初始化左右索引及基准值的索引
-        int i = start;
-        int j = end;
-        int middleIndex = start;
+        int i = start + 1;
+        int j = end - 1;
         while (true) {
+            // 寻找更大值
+            while (i < end && array[i] <= array[start]) {
+                i++;
+            }
+            // 寻找更小值
+            while (j > start && array[j] >= array[start]) {
+                j--;
+            }
             // 已遍历结束的情况
             if (i >= j) {
                 break;
-            }
-            // 寻找更大值
-            while (true) {
-                if (++i > j || array[i] > array[start]) {
-                    break;
-                }
-            }
-            // 寻找更小值
-            while (true) {
-                if (--j < i || array[j] < array[start]) {
-                    break;
-                }
             }
             // 交换两个值至合理位置
             temp = array[i];
             array[i] = array[j];
             array[j] = temp;
-            middleIndex = i;
+            i++;
+            j--;
 
         }
         // 移动基准值
         temp = array[start];
-        array[start] = array[i];
-        array[i] = temp;
-        return middleIndex;
+        array[start] = array[j];
+        array[j] = temp;
+        return j;
     }
     
 }
