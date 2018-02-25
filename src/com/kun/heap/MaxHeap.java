@@ -29,6 +29,7 @@ public class MaxHeap {
      * @param capacity 堆的容量
      */
     public MaxHeap(int capacity) {
+        assert capacity >= 0;
         this.data = new int[capacity];
         this.capacity = capacity;
         this.count = 0;
@@ -40,6 +41,7 @@ public class MaxHeap {
      * @param data 堆元素
      */
     public MaxHeap(int[] data) {
+        assert data != null;
         this.data = Arrays.copyOf(data, data.length);
         this.capacity = data.length;
         this.count = capacity;
