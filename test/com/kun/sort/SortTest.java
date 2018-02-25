@@ -1,6 +1,6 @@
-package com.kun;
+package com.kun.sort;
 
-import org.junit.After;
+import com.kun.heap.MaxHeap;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -28,8 +28,8 @@ public class SortTest {
         arrayLength = 7000000;
         int start = 0;
         int end = arrayLength;
-//        int end = 10;
-        int swapTimes =  10;
+        //        int end = 10;
+        int swapTimes = 10;
         
         oriNormalArray = new int[arrayLength];
         Random random = new Random();
@@ -52,12 +52,12 @@ public class SortTest {
             oriNearlyArray[i] = oriNearlyArray[i] ^ oriNearlyArray[j];
             swapTimes--;
         } while (swapTimes > 0);
-    
-//        for (int i : oriNormalArray) {
-//            System.out.print(i);
-//            System.out.print(", ");
-//        }
-//        System.out.println();
+        
+        //        for (int i : oriNormalArray) {
+        //            System.out.print(i);
+        //            System.out.print(", ");
+        //        }
+        //        System.out.println();
     }
     
     @Before
@@ -67,7 +67,7 @@ public class SortTest {
         
     }
     
-//    @After
+    //    @After
     public void tearDown() {
         for (int i : normalArray) {
             System.out.print(i);
@@ -86,7 +86,7 @@ public class SortTest {
         startTime = Instant.now();
         Sort.selectionSort(normalArray);
         System.out.println("selection sort spent：" + Duration.between(startTime, Instant.now()));
-    
+        
         startTime = Instant.now();
         Sort.selectionSort(nearlyArray);
         System.out.println("selection sort spent for nearly：" + Duration.between(startTime, Instant.now()));
@@ -97,18 +97,18 @@ public class SortTest {
         startTime = Instant.now();
         Sort.insertionSort(normalArray);
         System.out.println("insertion sort spent: " + Duration.between(startTime, Instant.now()));
-    
+        
         startTime = Instant.now();
         Sort.insertionSort(nearlyArray);
         System.out.println("insertion sort spent for nearly：" + Duration.between(startTime, Instant.now()));
     }
-
+    
     @Test
     public void bubbleSort() {
         startTime = Instant.now();
         Sort.bubbleSort(normalArray);
         System.out.println("bubble sort spent: " + Duration.between(startTime, Instant.now()));
-    
+        
         startTime = Instant.now();
         Sort.bubbleSort(nearlyArray);
         System.out.println("bubble sort spent for nearly：" + Duration.between(startTime, Instant.now()));
@@ -130,7 +130,7 @@ public class SortTest {
         startTime = Instant.now();
         Sort.iterationMergeSort(normalArray);
         System.out.println("iteration merge sort spent: " + Duration.between(startTime, Instant.now()));
-    
+        
         startTime = Instant.now();
         Sort.iterationMergeSort(nearlyArray);
         System.out.println("iteration merge sort spent for nearly：" + Duration.between(startTime, Instant.now()));
@@ -141,7 +141,7 @@ public class SortTest {
         startTime = Instant.now();
         Sort.quickSortSingleWay(normalArray);
         System.out.println("quick sort spent: " + Duration.between(startTime, Instant.now()));
-    
+        
         startTime = Instant.now();
         Sort.quickSortSingleWay(nearlyArray);
         System.out.println("quick sort spent for nearly：" + Duration.between(startTime, Instant.now()));
@@ -152,7 +152,7 @@ public class SortTest {
         startTime = Instant.now();
         Sort.quickSortDoubleWay(normalArray);
         System.out.println("quick sort double way spent: " + Duration.between(startTime, Instant.now()));
-    
+        
         startTime = Instant.now();
         Sort.quickSortDoubleWay(nearlyArray);
         System.out.println("quick sort double way spent for nearly：" + Duration.between(startTime, Instant.now()));
@@ -167,6 +167,17 @@ public class SortTest {
         startTime = Instant.now();
         Sort.quickSortTripleWay(nearlyArray);
         System.out.println("quick sort triple way spent for nearly：" + Duration.between(startTime, Instant.now()));
+    }
+    
+    @Test
+    public void heapSort() {
+        startTime = Instant.now();
+        MaxHeap.heapSort(normalArray);
+        System.out.println("heap sort spent: " + Duration.between(startTime, Instant.now()));
+        
+        startTime = Instant.now();
+        MaxHeap.heapSort(nearlyArray);
+        System.out.println("heap sort spent for nearly：" + Duration.between(startTime, Instant.now()));
     }
     
 }
