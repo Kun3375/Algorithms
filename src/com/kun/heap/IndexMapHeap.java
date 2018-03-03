@@ -3,12 +3,20 @@ package com.kun.heap;
 import java.util.Arrays;
 
 /**
- * 最大堆的实现
- *
  * @author CaoZiye
- * @version 1.0 2018/2/25 14:53
+ * @version 1.0 2018/3/3 11:35
  */
-public class MaxHeap implements Heap {
+public class IndexMapHeap implements Heap {
+    
+    /**
+     * 堆化的索引数组
+     */
+    protected int[] indexes;
+    
+    /**
+     * 反向查找数组，用来检索原索引在堆中（index 数组中）的位置
+     */
+    protected int[] reverse;
     
     /**
      * 使用数组容纳元素，每个子节点 n，父节点为 (n - 1) / 2
@@ -28,9 +36,13 @@ public class MaxHeap implements Heap {
      *
      * @param capacity 堆的容量
      */
-    public MaxHeap(int capacity) {
+    public IndexMapHeap(int capacity) {
         assert capacity >= 0;
         this.data = new int[capacity];
+        this.indexes = new int[capacity];
+        for (int i = 0; i < this.reverse.length; i++) {
+            this.reverse[i] = -1;
+        }
         this.capacity = capacity;
         this.count = 0;
     }
@@ -40,37 +52,20 @@ public class MaxHeap implements Heap {
      *
      * @param data 堆元素
      */
-    public MaxHeap(int[] data) {
+    public IndexMapHeap(int[] data) {
         assert data != null;
         this.data = Arrays.copyOf(data, data.length);
+        this.indexes = new int[data.length];
+        this.reverse = new int[data.length];
+        for (int i = 0; i < this.data.length; i++) {
+            this.reverse[i] = this.indexes[i] = i;
+        }
         this.capacity = data.length;
         this.count = capacity;
         // 最大堆性质，后半区没有字节点
         for (int i = (count >> 1) - 1; i >= 0; i--) {
             shiftDown(i);
         }
-    }
-    
-    /**
-     * 对数组进行堆排序
-     * 如果需要对单个实例堆中的元素排序，只需要 pop 即可
-     *
-     * @param array 被排序数组
-     * @see #pop() 可用于实例对象的排序
-     */
-    public static void heapSort(int[] array) {
-        // 堆化
-        for (int i = (array.length >> 1) - 1; i >= 0; i--) {
-            shiftDown(array, array.length, i);
-        }
-        // 排序
-        for (int i = array.length - 1; i > 1; i--) {
-            // 当前堆最大值放到后面
-            swap(array, 0, i);
-            // 新上来的值进行下移
-            shiftDown(array, i, 0);
-        }
-        swap(array, 0, 1);
     }
     
     /**
@@ -129,6 +124,30 @@ public class MaxHeap implements Heap {
     }
     
     /**
+     * 在指定索引处添加元素，不允许索引处存在旧值
+     *
+     * @param datum 新元素
+     * @param index 目标索引
+     */
+    public void insert(int datum, int index) {
+        assert count < capacity && reverse[index] == -1;
+        data[index] = datum;
+        
+        for (int i = count; ; i++) {
+            if (indexes[i] == index) {
+                // 交换indexes
+                int temp = indexes[count];
+                indexes[count] = index;
+                indexes[i] = temp;
+                reverse[index] = count;
+                shiftUp(count++);
+                break;
+            }
+        }
+        
+    }
+    
+    /**
      * 向堆中添加一个元素
      *
      * @param datum 新元素
@@ -136,8 +155,36 @@ public class MaxHeap implements Heap {
     @Override
     public void add(int datum) {
         assert count < capacity;
-        data[count] = datum;
+        data[indexes[count]] = datum;
+        reverse[indexes[count]] = count;
         shiftUp(count++);
+    }
+    
+    /**
+     * 删除原数组中指定位置的元素，仍然需要构成最大堆
+     * 对于索引堆，增删元素不仅需要维护 indexes 以及 reverse
+     * indexes 在 count 范围之外的元素需要保留，便于 add 操作快速定位空缺位置
+     *
+     * @param index 指定索引
+     * @return 指定索引处被移除的元素
+     */
+    public int remove(int index) {
+        assert reverse[index] != -1;
+        int e = data[index];
+        count--;
+        // 如果取出的元素使最小元素，不需要shiftDown和调整indexes的操作
+        if (index == indexes[count]) {
+            reverse[index] = -1;
+            return e;
+        }
+        // 调整indexes交换索引，调整reverses
+        indexes[reverse[index]] = indexes[count];
+        reverse[indexes[count]] = index;
+        
+        indexes[count] = index;
+        reverse[index] = -1;
+        shiftDown(index);
+        return e;
     }
     
     /**
@@ -148,8 +195,16 @@ public class MaxHeap implements Heap {
     @Override
     public int pop() {
         assert !isEmpty();
-        int max = data[0];
-        data[0] = data[--count];
+        int max = data[indexes[0]];
+        // reverse中标记该位置元素已删除
+        reverse[indexes[0]] = -1;
+        // 交换索引，为了使count位确定为被移除的元素，这样add时候不需要遍历可以直接定位
+        int temp = indexes[0];
+        indexes[0] = indexes[--count];
+        indexes[count] = temp;
+        // 把实际索引挂载到reverse上
+        reverse[indexes[0]] = 0;
+        // indexes[0]使最小元素需要shiftDown
         shiftDown(0);
         return max;
     }
@@ -161,7 +216,16 @@ public class MaxHeap implements Heap {
      */
     @Override
     public int peek() {
-        return data[0];
+        return data[indexes[0]];
+    }
+    
+    /**
+     * 返回最大元素的索引
+     *
+     * @return 最大元素的索引
+     */
+    public int getMaxIndex() {
+        return indexes[0];
     }
     
     /**
@@ -171,19 +235,22 @@ public class MaxHeap implements Heap {
      */
     private void shiftUp(int index) {
         int parentIndex;
-        int e = data[index];
+        int i = indexes[index];
+        int e = data[i];
         while (index > 0) {
             // 如果子节点更大
             parentIndex = (index - 1) / 2;
-            if (e > data[parentIndex]) {
-                data[index] = data[parentIndex];
+            if (e > data[indexes[parentIndex]]) {
+                indexes[index] = indexes[parentIndex];
+                reverse[indexes[index]] = index;
                 index = parentIndex;
                 continue;
             }
             // 如果父节点大于或者等于子节点，终止操作
             break;
         }
-        data[index] = e;
+        indexes[index] = i;
+        reverse[indexes[index]] = index;
     }
     
     /**
@@ -193,36 +260,39 @@ public class MaxHeap implements Heap {
      */
     private void shiftDown(int index) {
         int childIndex;
-        int e = data[index];
+        int i = indexes[index];
+        int e = data[i];
         // 最大堆的性质，后一半索引区域的元素为叶子节点
         // 索引在前半区的时候需要判断
         while (index < count >> 1) {
             // 判断有没有右边的子节点
             if ((childIndex = (index + 1) << 1) < count) {
-                childIndex = data[childIndex] > data[childIndex - 1] ? childIndex : childIndex - 1;
+                childIndex = data[indexes[childIndex]] > data[indexes[childIndex - 1]] ? childIndex : childIndex - 1;
             } else {
                 childIndex -= 1;
             }
             // 如果子节点更大
-            if (e < data[childIndex]) {
-                data[index] = data[childIndex];
+            if (e < data[indexes[childIndex]]) {
+                indexes[index] = indexes[childIndex];
+                reverse[indexes[index]] = index;
                 index = childIndex;
                 continue;
             }
             // 没有子节点更大，终止操作
             break;
         }
-        data[index] = e;
+        indexes[index] = i;
+        // 修复最后一次 pop 操作会导致索引不更新成 -1
+        reverse[indexes[index]] = count == 0 ? -1 : index;
     }
     
-    /**
-     * 获得堆中元素排序后的数组
-     *
-     * @return 排序后数组
-     */
+    
     @Override
     public int[] sort() {
-        int[] sortedData = Arrays.copyOf(data, count);
+        int[] sortedData = new int[count];
+        for (int i = 0; i < count; i++) {
+            sortedData[i] = data[indexes[i]];
+        }
         for (int i = sortedData.length - 1; i > 1; i--) {
             // 当前堆最大值放到后面
             swap(sortedData, 0, i);
