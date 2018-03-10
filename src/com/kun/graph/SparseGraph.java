@@ -85,4 +85,13 @@ public class SparseGraph implements Graph {
         return list[i];
     }
     
+    @Override
+    public void show() {
+        for (int i = 0; i < list.length; i++) {
+            System.out.print(String.format("% 3d", i) + ": ");
+            list[i].forEach(j -> System.out.print(String.format("% 4d", j)));
+            System.out.println();
+        }
+    }
+    
 }

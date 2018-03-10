@@ -24,24 +24,12 @@ public class TestGraph {
     
     @Test
     public void testSparsePrintAdjacencyList() {
-        // 测试迭代
-        for (int i = 0; i < vertex; i++) {
-            System.out.print(i + ": ");
-            Iterable<Integer> vertices = sparseGraph.getAdjacencyVertices(i);
-            vertices.forEach(v -> System.out.print(v + " "));
-            System.out.println();
-        }
+        sparseGraph.show();
     }
 
     @Test
     public void testDensePrintAdjacencyList() {
-        // 测试迭代
-        for (int i = 0; i < vertex; i++) {
-            System.out.print(i + ": ");
-            Iterable<Integer> vertices = denseGraph.getAdjacencyVertices(i);
-            vertices.forEach(v -> System.out.print(v + " "));
-            System.out.println();
-        }
+        denseGraph.show();
     }
     
     private static void initEdge(Graph graph) {

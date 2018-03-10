@@ -82,6 +82,24 @@ public class DenseGraph implements Graph {
         return list;
     }
     
+    @Override
+    public void show() {
+        
+        System.out.print("   ");
+        for (int i = 0; i < vertex; i++) {
+            System.out.print(String.format("% 4d", i));
+        }
+        System.out.println();
+        
+        for (int i = 0; i < matrix.length; i++) {
+            System.out.print(String.format("% 3d", i));
+            for (int j = 0; j < matrix[i].length; j++) {
+                System.out.print(String.format("% 4d",(matrix[i][j] ? 1 : 0)));
+            }
+            System.out.println();
+        }
+    }
+    
     
 }
 

@@ -16,4 +16,6 @@ public interface Graph {
     
     Iterable<Integer> getAdjacencyVertices(int i);
     
+    void show();
+    
 }
