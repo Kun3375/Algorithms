@@ -79,5 +79,12 @@ public class TestGraphHelper {
         helper.getPath(5).forEach(System.out::print);
     }
     
+    @Test
+    public void testShortestPath() {
+        GraphShortestPathHelper helper = GraphShortestPathHelper.build(DG2, 0);
+        System.out.println(helper.getDistance(5));
+        helper.printPath(5);
+    }
+    
     
 }
