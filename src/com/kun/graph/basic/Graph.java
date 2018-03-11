@@ -1,4 +1,4 @@
-package com.kun.graph;
+package com.kun.graph.basic;
 
 /**
  * @author CaoZiye

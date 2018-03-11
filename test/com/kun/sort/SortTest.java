@@ -17,10 +17,10 @@ import java.util.Random;
 public class SortTest {
     
     private static int arrayLength;
-    private static int[] oriNormalArray;
-    private static int[] oriNearlyArray;
-    private int[] normalArray;
-    private int[] nearlyArray;
+    private static Integer[] oriNormalArray;
+    private static Integer[] oriNearlyArray;
+    private Integer[] normalArray;
+    private Integer[] nearlyArray;
     private Instant startTime;
     
     @BeforeClass
@@ -31,13 +31,13 @@ public class SortTest {
         //        int end = 10;
         int swapTimes = 10;
         
-        oriNormalArray = new int[arrayLength];
+        oriNormalArray = new Integer[arrayLength];
         Random random = new Random();
         for (int i = 0; i < arrayLength; i++) {
             oriNormalArray[i] = random.nextInt(end - start) + start;
         }
         
-        oriNearlyArray = new int[arrayLength];
+        oriNearlyArray = new Integer[arrayLength];
         for (int i = 0; i < oriNearlyArray.length; i++) {
             oriNearlyArray[i] = i;
         }

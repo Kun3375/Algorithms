@@ -1,6 +1,5 @@
 package com.kun.graph.weighted;
 
-import com.kun.graph.*;
 import org.junit.BeforeClass;
 import org.junit.Test;
 

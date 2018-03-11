@@ -8,13 +8,19 @@ import java.util.Arrays;
  */
 public class Sort {
     
+    private static <E extends Comparable<E>> void swap(E[] array, int i, int j) {
+        E temp = array[i];
+        array[i] = array[j];
+        array[j] = temp;
+    }
+    
     /**
      * 选择排序，时间复杂度稳定 O(N^2)
      * 对任何类型的数列，耗时稳定，每次需要完整遍历
      *
      * @param array 被排序数组
      */
-    public static void selectionSort(int[] array) {
+    public static <E extends Comparable<E>> void selectionSort(E[] array) {
         // 1.从头遍历数组
         for (int i = 0; i < array.length - 1; i++) {
             // 2.需要记录最小值的索引，初始为当前遍历的首项
@@ -22,15 +28,13 @@ public class Sort {
             // 3.前面已排序的项将被跳过，遍历之后乱序的项
             for (int j = i + 1; j < array.length; j++) {
                 // 4.如果发现更小的项，更新索引
-                if (array[index] > array[j]) {
+                if (array[index].compareTo(array[j]) > 0) {
                     index = j;
                 }
             }
             // 5.交换最小项至当前位置
-            if (array[index] != array[i]) {
-                array[index] = array[i] ^ array[index];
-                array[i] = array[i] ^ array[index];
-                array[index] = array[i] ^ array[index];
+            if (array[index].compareTo(array[i]) != 0) {
+                swap(array, index, i);
             }
         }
     }
@@ -41,7 +45,7 @@ public class Sort {
      *
      * @param array 原被排序数组
      */
-    public static void insertionSort(int[] array) {
+    public static <E extends Comparable<E>> void insertionSort(E[] array) {
         insertionSort(array, 0, array.length);
     }
     
@@ -53,8 +57,8 @@ public class Sort {
      * @param start 排序起始索引
      * @param end   排序结束索引（不包含）
      */
-    public static void insertionSort(int[] array, int start, int end) {
-        int tempValue;
+    public static <E extends Comparable<E>> void insertionSort(E[] array, int start, int end) {
+        E tempValue;
         int tempIndex;
         for (int index = start; index < end; index++) {
             // 1.将当前值保存
@@ -62,7 +66,7 @@ public class Sort {
             // 2.记录当前索引
             tempIndex = index;
             // 3.倒叙遍历之前的已排序数组，发现超过 tempValue 时向后顺移，腾出位置，同时索引减 1
-            for (; tempIndex > start && array[tempIndex - 1] > tempValue; tempIndex--) {
+            for (; tempIndex > start && array[tempIndex - 1].compareTo(tempValue) > 0; tempIndex--) {
                 // 向后挪
                 array[tempIndex] = array[tempIndex - 1];
             }
@@ -79,16 +83,14 @@ public class Sort {
      *
      * @param array 被排序数组
      */
-    public static void bubbleSort(int[] array) {
+    public static <E extends Comparable<E>> void bubbleSort(E[] array) {
         // 1.遍历次数约数组长度 - 1 次
         for (int i = 0; i < array.length - 1; i++) {
             // 2.遍历前半段未排序部分
             for (int j = 0; j < array.length - i - 1; j++) {
                 // 3.比较相邻值，顺序不对时需要换位，一次迭代至最后
-                if (array[j] > array[j + 1]) {
-                    array[j] = array[j] ^ array[j + 1];
-                    array[j + 1] = array[j] ^ array[j + 1];
-                    array[j] = array[j] ^ array[j + 1];
+                if (array[j].compareTo(array[j + 1]) > 0) {
+                    swap(array, j, j + 1);
                 }
             }
         }
@@ -99,7 +101,7 @@ public class Sort {
      *
      * @param array 被排序数组
      */
-    public static void recursiveMergeSort(int[] array) {
+    public static <E extends Comparable<E>> void recursiveMergeSort(E[] array) {
         recursiveMergeSortPartition(array, 0, array.length >> 1);
         recursiveMergeSortPartition(array, array.length >> 1, array.length);
         mergeSortMerge(array, 0, array.length >> 1, array.length);
@@ -112,7 +114,7 @@ public class Sort {
      * @param start 起始索引
      * @param end   结束索引（不包含）
      */
-    private static void recursiveMergeSortPartition(int[] array, int start, int end) {
+    private static <E extends Comparable<E>> void recursiveMergeSortPartition(E[] array, int start, int end) {
         
         // 递归深处的小数组使用插入排序优化
         if (start + 16 >= end) {
@@ -139,30 +141,28 @@ public class Sort {
      * @param start 起始索引
      * @param end   结束索引（不包含）
      */
-    private static void mergeSortMerge(int[] array, int start, int middle, int end) {
+    private static <E extends Comparable<E>> void mergeSortMerge(E[] array, int start, int middle, int end) {
         
         // ************************** 优化 **************************
         // 两部分之间有有序性规律
         // 如果某一段起始值比另一段结束值更大，直接拼接
         // 第二段更大的情况，直接返回
-        if (array[middle] > array[middle - 1]) {
+        if (array[middle].compareTo(array[middle - 1]) > 0) {
             return;
         }
         // 第一段更大，对调两部分，为了通用，仅作两端对称情况下啊的优化
-        if (array[start] > array[end - 1] && (middle - start == end - middle)) {
+        if (array[start].compareTo(array[end - 1]) > 0 && (middle - start == end - middle)) {
             
             for (int delta = 0; start + delta < middle; delta++) {
                 int newStart = start + delta, newMiddle = middle + delta;
-                array[newStart] = array[newStart] ^ array[newMiddle];
-                array[newMiddle] = array[newStart] ^ array[newMiddle];
-                array[newStart] = array[newStart] ^ array[newMiddle];
+                swap(array, newStart, newMiddle);
             }
             return;
         }
         // ********************************************************
         
         // 1.将需要排序的段落先复制一个副本
-        int[] temp = Arrays.copyOfRange(array, start, end);
+        E[] temp = Arrays.copyOfRange(array, start, end);
         // 2.这个副本有着有序的前后两个部分，记录下起始索引，中间索引（第二段的起始索引）
         int firStart = 0;
         middle -= start;
@@ -182,7 +182,7 @@ public class Sort {
             }
             // 比较前后两值大小
             // 前半段较小
-            if (temp[firStart] < temp[secStart]) {
+            if (temp[firStart].compareTo(temp[secStart]) < 0) {
                 array[start] = temp[firStart++];
                 continue;
             }
@@ -196,7 +196,7 @@ public class Sort {
      *
      * @param array 被排序数组
      */
-    public static void iterationMergeSort(int[] array) {
+    public static <E extends Comparable<E>> void iterationMergeSort(E[] array) {
         
         int length = array.length;
         // 最小单元使用插入排序优化
@@ -220,7 +220,7 @@ public class Sort {
      *
      * @param array 被排序数组
      */
-    public static void quickSortSingleWay(int[] array) {
+    public static <E extends Comparable<E>> void quickSortSingleWay(E[] array) {
         quickSortSingleWayCore(array, 0, array.length);
     }
     
@@ -231,7 +231,7 @@ public class Sort {
      * @param start 排序区间起始索引
      * @param end   排序区间结束索引（不包含）
      */
-    private static void quickSortSingleWayCore(int[] array, int start, int end) {
+    private static <E extends Comparable<E>> void quickSortSingleWayCore(E[] array, int start, int end) {
         
         // 递归深处的小数组使用插入排序优化
         if (start + 16 >= end) {
@@ -258,14 +258,11 @@ public class Sort {
      * @param end   需要分片的结束索引（不包含）
      * @return 中间值（原初始索引处的值 array[start]）在分片完成后的索引
      */
-    private static int quickSortPartition(int[] array, int start, int end) {
+    private static <E extends Comparable<E>> int quickSortPartition(E[] array, int start, int end) {
         
-        int temp;
         // 优化，首项随机化处理（如果可能需要处理近乎有序的数组）
         int randomIndex = (int) (Math.random() * (end - start) + start);
-        temp = array[randomIndex];
-        array[randomIndex] = array[start];
-        array[start] = temp;
+        swap(array, randomIndex, start);
         
         // 该值用来记录中间值的索引
         int middle = start;
@@ -274,16 +271,12 @@ public class Sort {
             // 如果出现某个值比 array[start] 更小的情况
             // 需要将其和第二段（大于 array[start] 的片区）的第一个值交换
             // 同时更新 middle
-            if (array[i] < array[start]) {
-                temp = array[++middle];
-                array[middle] = array[i];
-                array[i] = temp;
+            if (array[i].compareTo(array[start]) < 0) {
+                swap(array, ++middle, i);
             }
         }
         // 遍历完成后将 array[start] 插入至理想位置，返回其索引
-        temp = array[start];
-        array[start] = array[middle];
-        array[middle] = temp;
+        swap(array, start, middle);
         return middle;
     }
     
@@ -294,7 +287,7 @@ public class Sort {
      *
      * @param array 被排序数组
      */
-    public static void quickSortDoubleWay(int[] array) {
+    public static <E extends Comparable<E>> void quickSortDoubleWay(E[] array) {
         quickSortDoubleWayCore(array, 0, array.length);
     }
     
@@ -305,7 +298,7 @@ public class Sort {
      * @param start 排序区间起始索引
      * @param end   排序区间结束索引（不包含）
      */
-    private static void quickSortDoubleWayCore(int[] array, int start, int end) {
+    private static <E extends Comparable<E>> void quickSortDoubleWayCore(E[] array, int start, int end) {
         
         // 递归深处的小数组使用插入排序优化
         if (start + 16 >= end) {
@@ -332,14 +325,11 @@ public class Sort {
      * @param end   需要分片的结束索引（不包含）
      * @return 中间值（原初始索引处的值 array[start]）在分片完成后的索引
      */
-    private static int quickSortDoubleWayPartition(int[] array, int start, int end) {
+    private static <E extends Comparable<E>> int quickSortDoubleWayPartition(E[] array, int start, int end) {
         
-        int temp;
         // 优化，首项随机化处理（如果可能需要处理近乎有序的数组）
         int randomIndex = (int) (Math.random() * (end - start) + start);
-        temp = array[randomIndex];
-        array[randomIndex] = array[start];
-        array[start] = temp;
+        swap(array, randomIndex, start);
         
         // 初始化左右索引及基准值的索引
         int i = start + 1;
@@ -349,11 +339,11 @@ public class Sort {
             // 因为如果取等，在大量重复值的情况下，会导致某一循环过长，进而拆分不均匀，丧失了双路排序的初衷
             // 不取等的情况下，有一定概率两端同时交换一个相等的值
             // 寻找更大值
-            while (i < end && array[i] < array[start]) {
+            while (i < end && array[i].compareTo(array[start]) < 0) {
                 i++;
             }
             // 寻找更小值
-            while (j > start && array[j] > array[start]) {
+            while (j > start && array[j].compareTo(array[start]) > 0) {
                 j--;
             }
             // 已遍历结束的情况
@@ -361,17 +351,13 @@ public class Sort {
                 break;
             }
             // 交换两个值至合理位置
-            temp = array[i];
-            array[i] = array[j];
-            array[j] = temp;
+            swap(array, i, j);
             i++;
             j--;
             
         }
         // 移动基准值
-        temp = array[start];
-        array[start] = array[j];
-        array[j] = temp;
+        swap(array, start, j);
         return j;
     }
     
@@ -382,7 +368,7 @@ public class Sort {
      *
      * @param array 被排序数组
      */
-    public static void quickSortTripleWay(int[] array) {
+    public static <E extends Comparable<E>> void quickSortTripleWay(E[] array) {
         quickSortTripleWayCore(array, 0, array.length);
     }
     
@@ -393,7 +379,7 @@ public class Sort {
      * @param start 排序区间开始索引
      * @param end   排序区间结束索引（不包含）
      */
-    private static void quickSortTripleWayCore(int[] array, int start, int end) {
+    private static <E extends Comparable<E>> void quickSortTripleWayCore(E[] array, int start, int end) {
         
         // 递归深处的小数组使用插入排序优化
         if (start + 16 >= end) {
@@ -405,34 +391,27 @@ public class Sort {
         //            return;
         //        }
         
-        int temp;
         // 优化，首项随机化处理（如果可能需要处理近乎有序的数组）
         int randomIndex = (int) (Math.random() * (end - start) + start);
-        temp = array[randomIndex];
-        array[randomIndex] = array[start];
-        array[start] = temp;
+        swap(array, randomIndex, start);
         
         // 分片实现
         int lt = start + 1;
         int gt = end;
         for (int i = lt; i < gt; ) {
-            if (array[i] < array[start]) {
+            if (array[i].compareTo(array[start]) < 0) {
                 // 把最前一个相等值换至当前位置，更小值换过去相当于拼接在第一区间的末尾
-                temp = array[i];
-                array[i] = array[lt];
-                array[lt] = temp;
+                swap(array, lt, i);
                 // 相等值的开始索引向后挪
                 lt++;
                 i++;
                 continue;
             }
-            if (array[i] > array[start]) {
+            if (array[i].compareTo(array[start]) > 0) {
                 // 扩大更大值的区间
                 gt--;
                 // 把这个大值交换进去
-                temp = array[i];
-                array[i] = array[gt];
-                array[gt] = temp;
+                swap(array, gt, i);
                 // 不需要 i++，交换过来一个未判断的值
                 continue;
             }
@@ -440,9 +419,7 @@ public class Sort {
             i++;
         }
         // 将首值与最后一个小值交换即可
-        temp = array[start];
-        array[start] = array[lt - 1];
-        array[lt - 1] = temp;
+        swap(array, start, lt - 1);
         
         // 递归过程
         // 排序小于和大于首值的区间，不用再次处理等于首值的元素了

@@ -1,12 +1,13 @@
 package com.kun.heap;
 
+import java.lang.reflect.Array;
 import java.util.Arrays;
 
 /**
  * @author CaoZiye
  * @version 1.0 2018/3/3 11:35
  */
-public class IndexMapHeap implements Heap {
+public class IndexMapHeap<E extends Comparable<E>> implements Heap<E> {
     
     /**
      * 堆化的索引数组
@@ -21,7 +22,7 @@ public class IndexMapHeap implements Heap {
     /**
      * 使用数组容纳元素，每个子节点 n，父节点为 (n - 1) / 2
      */
-    protected int[] data;
+    protected E[] data;
     /**
      * 该堆的容量
      */
@@ -34,11 +35,13 @@ public class IndexMapHeap implements Heap {
     /**
      * 指定堆容量，构造一个最大堆
      *
+     * @param clazz 元素类型
      * @param capacity 堆的容量
      */
-    public IndexMapHeap(int capacity) {
+    @SuppressWarnings("unchecked")
+    public IndexMapHeap(Class<E> clazz, int capacity) {
         assert capacity >= 0;
-        this.data = new int[capacity];
+        this.data = (E[]) Array.newInstance(clazz, capacity);
         this.indexes = new int[capacity];
         for (int i = 0; i < this.reverse.length; i++) {
             this.reverse[i] = -1;
@@ -52,7 +55,7 @@ public class IndexMapHeap implements Heap {
      *
      * @param data 堆元素
      */
-    public IndexMapHeap(int[] data) {
+    public IndexMapHeap(E[] data) {
         assert data != null;
         this.data = Arrays.copyOf(data, data.length);
         this.indexes = new int[data.length];
@@ -76,16 +79,16 @@ public class IndexMapHeap implements Heap {
      * @param index    当前元素索引
      * @see #shiftDown(int)
      */
-    private static void shiftDown(int[] array, int heapSize, int index) {
+    private static <E extends Comparable<E>> void shiftDown(E[] array, int heapSize, int index) {
         int childIndex;
-        int e = array[index];
+        E e = array[index];
         while (index < heapSize >> 1) {
             if ((childIndex = (index + 1) << 1) < heapSize) {
-                childIndex = array[childIndex] > array[childIndex - 1] ? childIndex : childIndex - 1;
+                childIndex = array[childIndex].compareTo(array[childIndex - 1]) > 0 ? childIndex : childIndex - 1;
             } else {
                 childIndex -= 1;
             }
-            if (e < array[childIndex]) {
+            if (e.compareTo(array[childIndex]) < 0) {
                 array[index] = array[childIndex];
                 index = childIndex;
                 continue;
@@ -102,8 +105,8 @@ public class IndexMapHeap implements Heap {
      * @param i     索引一
      * @param j     索引二
      */
-    private static void swap(int[] array, int i, int j) {
-        int temp = array[i];
+    private static <E extends Comparable<E>> void swap(E[] array, int i, int j) {
+        E temp = array[i];
         array[i] = array[j];
         array[j] = temp;
     }
@@ -129,7 +132,7 @@ public class IndexMapHeap implements Heap {
      * @param datum 新元素
      * @param index 目标索引
      */
-    public void insert(int datum, int index) {
+    public void insert(E datum, int index) {
         assert count < capacity && reverse[index] == -1;
         data[index] = datum;
         
@@ -153,7 +156,7 @@ public class IndexMapHeap implements Heap {
      * @param datum 新元素
      */
     @Override
-    public void add(int datum) {
+    public void add(E datum) {
         assert count < capacity;
         data[indexes[count]] = datum;
         reverse[indexes[count]] = count;
@@ -168,9 +171,9 @@ public class IndexMapHeap implements Heap {
      * @param index 指定索引
      * @return 指定索引处被移除的元素
      */
-    public int remove(int index) {
+    public E remove(int index) {
         assert reverse[index] != -1;
-        int e = data[index];
+        E e = data[index];
         count--;
         // 如果取出的元素使最小元素，不需要shiftDown和调整indexes的操作
         if (index == indexes[count]) {
@@ -193,9 +196,9 @@ public class IndexMapHeap implements Heap {
      * @return 堆中的最大元素
      */
     @Override
-    public int pop() {
+    public E pop() {
         assert !isEmpty();
-        int max = data[indexes[0]];
+        E max = data[indexes[0]];
         // reverse中标记该位置元素已删除
         reverse[indexes[0]] = -1;
         // 交换索引，为了使count位确定为被移除的元素，这样add时候不需要遍历可以直接定位
@@ -215,7 +218,7 @@ public class IndexMapHeap implements Heap {
      * @return 最大元素值
      */
     @Override
-    public int peek() {
+    public E peek() {
         return data[indexes[0]];
     }
     
@@ -236,11 +239,11 @@ public class IndexMapHeap implements Heap {
     private void shiftUp(int index) {
         int parentIndex;
         int i = indexes[index];
-        int e = data[i];
+        E e = data[i];
         while (index > 0) {
             // 如果子节点更大
             parentIndex = (index - 1) / 2;
-            if (e > data[indexes[parentIndex]]) {
+            if (e.compareTo(data[indexes[parentIndex]]) > 0) {
                 indexes[index] = indexes[parentIndex];
                 reverse[indexes[index]] = index;
                 index = parentIndex;
@@ -261,18 +264,19 @@ public class IndexMapHeap implements Heap {
     private void shiftDown(int index) {
         int childIndex;
         int i = indexes[index];
-        int e = data[i];
+        E e = data[i];
         // 最大堆的性质，后一半索引区域的元素为叶子节点
         // 索引在前半区的时候需要判断
         while (index < count >> 1) {
             // 判断有没有右边的子节点
             if ((childIndex = (index + 1) << 1) < count) {
-                childIndex = data[indexes[childIndex]] > data[indexes[childIndex - 1]] ? childIndex : childIndex - 1;
+                childIndex = data[indexes[childIndex]].compareTo(data[indexes[childIndex - 1]]) > 0 ?
+                        childIndex : childIndex - 1;
             } else {
                 childIndex -= 1;
             }
             // 如果子节点更大
-            if (e < data[indexes[childIndex]]) {
+            if (e.compareTo(data[indexes[childIndex]]) < 0) {
                 indexes[index] = indexes[childIndex];
                 reverse[indexes[index]] = index;
                 index = childIndex;
@@ -287,9 +291,10 @@ public class IndexMapHeap implements Heap {
     }
     
     
+    @SuppressWarnings("unchecked")
     @Override
-    public int[] sort() {
-        int[] sortedData = new int[count];
+    public E[] sort() {
+        E[] sortedData =(E[]) Array.newInstance(data.getClass().getComponentType(), count);
         for (int i = 0; i < count; i++) {
             sortedData[i] = data[indexes[i]];
         }

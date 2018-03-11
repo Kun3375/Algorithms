@@ -1,4 +1,4 @@
-package com.kun.graph;
+package com.kun.graph.basic;
 
 import org.junit.BeforeClass;
 import org.junit.Test;

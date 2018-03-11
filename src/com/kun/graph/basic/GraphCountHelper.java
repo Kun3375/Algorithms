@@ -1,4 +1,4 @@
-package com.kun.graph;
+package com.kun.graph.basic;
 
 /**
  * 对一个图进行深度优先遍历，

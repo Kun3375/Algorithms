@@ -4,7 +4,7 @@ package com.kun.heap;
  * @author CaoZiye
  * @version 1.0 2018/3/3 14:13
  */
-public interface Heap {
+public interface Heap<E extends Comparable<E>> {
     
     int size();
     
@@ -12,12 +12,12 @@ public interface Heap {
     
     boolean isEmpty();
     
-    int pop();
+    E pop();
     
-    int peek();
+    E peek();
     
-    void add(int e);
+    void add(E e);
     
-    int[] sort();
+    E[] sort();
     
 }

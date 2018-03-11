@@ -12,7 +12,7 @@ import java.util.Random;
 public class HeapTest {
     
     private static int capacity = 10;
-    private static int[] array = new int[capacity];
+    private static Integer[] array = new Integer[capacity];
     
     @BeforeClass
     public static void init() {
@@ -27,7 +27,7 @@ public class HeapTest {
     
     @Test
     public void testIndexMaxHeap() {
-        IndexMapHeap indexMapHeap = new IndexMapHeap(array);
+        IndexMapHeap<Integer> indexMapHeap = new IndexMapHeap<>(array);
         printSort(indexMapHeap);
         printHeap(indexMapHeap);
         printIndexAndReverse(indexMapHeap);
@@ -53,7 +53,7 @@ public class HeapTest {
     
     @Test
     public void testPop() {
-        IndexMapHeap indexMapHeap = new IndexMapHeap(array);
+        IndexMapHeap<Integer> indexMapHeap = new IndexMapHeap<>(array);
         int count = 5;
         while (count-- > 0) {
             System.out.print(indexMapHeap.pop() + " ");
@@ -67,16 +67,16 @@ public class HeapTest {
         System.out.println();
     }
     
-    private void printSort(Heap heap) {
-        int[] sortedData = heap.sort();
+    private <E extends Comparable<E>> void printSort(Heap<E> heap) {
+        E[] sortedData = heap.sort();
         for (int i = 0; i < sortedData.length; i++) {
             System.out.print(sortedData[i] + " ");
         }
         System.out.println();
     }
     
-    private void printHeap(IndexMapHeap indexMapHeap) {
-        for (int datum : indexMapHeap.data) {
+    private <E extends Comparable<E>> void printHeap(IndexMapHeap<E> indexMapHeap) {
+        for (E datum : indexMapHeap.data) {
             System.out.print(datum + " ");
         }
         System.out.println();
