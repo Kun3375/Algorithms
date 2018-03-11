@@ -8,7 +8,7 @@ import java.util.Arrays;
  */
 public class Sort {
     
-    private static <E extends Comparable<E>> void swap(E[] array, int i, int j) {
+    private static <E> void swap(E[] array, int i, int j) {
         E temp = array[i];
         array[i] = array[j];
         array[j] = temp;

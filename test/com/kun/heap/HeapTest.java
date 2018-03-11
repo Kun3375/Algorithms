@@ -27,42 +27,42 @@ public class HeapTest {
     
     @Test
     public void testIndexMaxHeap() {
-        IndexMapHeap<Integer> indexMapHeap = new IndexMapHeap<>(array);
-        printSort(indexMapHeap);
-        printHeap(indexMapHeap);
-        printIndexAndReverse(indexMapHeap);
-        indexMapHeap.remove(4);
-        printSort(indexMapHeap);
-        printHeap(indexMapHeap);
-        printIndexAndReverse(indexMapHeap);
-        indexMapHeap.insert(9, 4);
-        printSort(indexMapHeap);
-        printHeap(indexMapHeap);
-        printIndexAndReverse(indexMapHeap);
-        indexMapHeap.pop();
-        printSort(indexMapHeap);
-        printHeap(indexMapHeap);
-        printIndexAndReverse(indexMapHeap);
-        while (!indexMapHeap.isEmpty()) {
-            System.out.print(indexMapHeap.pop() + " ");
+        IndexMaxHeap<Integer> indexMaxHeap = new IndexMaxHeap<>(array);
+        printSort(indexMaxHeap);
+        printHeap(indexMaxHeap);
+        printIndexAndReverse(indexMaxHeap);
+        indexMaxHeap.remove(4);
+        printSort(indexMaxHeap);
+        printHeap(indexMaxHeap);
+        printIndexAndReverse(indexMaxHeap);
+        indexMaxHeap.insert(9, 4);
+        printSort(indexMaxHeap);
+        printHeap(indexMaxHeap);
+        printIndexAndReverse(indexMaxHeap);
+        indexMaxHeap.pop();
+        printSort(indexMaxHeap);
+        printHeap(indexMaxHeap);
+        printIndexAndReverse(indexMaxHeap);
+        while (!indexMaxHeap.isEmpty()) {
+            System.out.print(indexMaxHeap.pop() + " ");
         }
         System.out.println();
-        printHeap(indexMapHeap);
-        printIndexAndReverse(indexMapHeap);
+        printHeap(indexMaxHeap);
+        printIndexAndReverse(indexMaxHeap);
     }
     
     @Test
     public void testPop() {
-        IndexMapHeap<Integer> indexMapHeap = new IndexMapHeap<>(array);
+        IndexMaxHeap<Integer> indexMaxHeap = new IndexMaxHeap<>(array);
         int count = 5;
         while (count-- > 0) {
-            System.out.print(indexMapHeap.pop() + " ");
+            System.out.print(indexMaxHeap.pop() + " ");
         }
         System.out.println();
-        indexMapHeap.add(7);
-        indexMapHeap.add(2);
-        while (!indexMapHeap.isEmpty()) {
-            System.out.print(indexMapHeap.pop() + " ");
+        indexMaxHeap.add(7);
+        indexMaxHeap.add(2);
+        while (!indexMaxHeap.isEmpty()) {
+            System.out.print(indexMaxHeap.pop() + " ");
         }
         System.out.println();
     }
@@ -75,19 +75,19 @@ public class HeapTest {
         System.out.println();
     }
     
-    private <E extends Comparable<E>> void printHeap(IndexMapHeap<E> indexMapHeap) {
-        for (E datum : indexMapHeap.data) {
+    private <E extends Comparable<E>> void printHeap(IndexMaxHeap<E> indexMaxHeap) {
+        for (E datum : indexMaxHeap.data) {
             System.out.print(datum + " ");
         }
         System.out.println();
     }
     
-    private void printIndexAndReverse(IndexMapHeap indexMapHeap) {
-        for (int index : indexMapHeap.indexes) {
+    private void printIndexAndReverse(IndexMaxHeap indexMaxHeap) {
+        for (int index : indexMaxHeap.indexes) {
             System.out.print(index + " ");
         }
         System.out.println();
-        for (int reverse : indexMapHeap.reverse) {
+        for (int reverse : indexMaxHeap.reverse) {
             System.out.print(reverse + " ");
         }
         System.out.println();

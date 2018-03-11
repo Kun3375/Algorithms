@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
  * @author CaoZiye
  * @version 1.0 2018/3/8 22:50
  */
-public class DenseWeightedGraph<W extends Comparable<W>> implements WeightedGraph<W> {
+public class DenseWeightedGraph<W extends Number & Comparable<W>> implements WeightedGraph<W> {
     
     /**
      * 顶点数

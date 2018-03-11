@@ -4,12 +4,12 @@ import java.lang.reflect.Array;
 import java.util.Arrays;
 
 /**
- * 最大堆的实现
+ * 最小堆的实现
  *
  * @author CaoZiye
- * @version 1.0 2018/2/25 14:53
+ * @version 1.0 2018/3/11 20:39
  */
-public class MaxHeap<E extends Comparable<E>> implements Heap<E> {
+public class MinHeap<E extends Comparable<E>> implements Heap<E> {
     
     /**
      * 使用数组容纳元素，每个子节点 n，父节点为 (n - 1) / 2
@@ -25,13 +25,13 @@ public class MaxHeap<E extends Comparable<E>> implements Heap<E> {
     protected int count;
     
     /**
-     * 指定堆容量，构造一个最大堆
+     * 指定堆容量，构造一个最小堆
      *
      * @param clazz 元素类型
      * @param capacity 堆的容量
      */
     @SuppressWarnings("unchecked")
-    public MaxHeap(Class<E> clazz, int capacity) {
+    public MinHeap(Class<E> clazz, int capacity) {
         assert capacity >= 0;
         this.data = (E[]) Array.newInstance(clazz, capacity);
         this.capacity = capacity;
@@ -39,16 +39,16 @@ public class MaxHeap<E extends Comparable<E>> implements Heap<E> {
     }
     
     /**
-     * 使用现成的数组构造一个最大堆
+     * 使用现成的数组构造一个最小堆
      *
      * @param data 堆元素
      */
-    public MaxHeap(E[] data) {
+    public MinHeap(E[] data) {
         assert data != null;
         this.data = Arrays.copyOf(data, data.length);
         this.capacity = data.length;
         this.count = capacity;
-        // 最大堆性质，后半区没有字节点
+        // 最小堆性质，后半区没有字节点
         for (int i = (count >> 1) - 1; i >= 0; i--) {
             shiftDown(i);
         }
@@ -68,7 +68,7 @@ public class MaxHeap<E extends Comparable<E>> implements Heap<E> {
         }
         // 排序
         for (int i = array.length - 1; i > 1; i--) {
-            // 当前堆最大值放到后面
+            // 当前堆最小值放到后面
             swap(array, 0, i);
             // 新上来的值进行下移
             shiftDown(array, i, 0);
@@ -89,11 +89,11 @@ public class MaxHeap<E extends Comparable<E>> implements Heap<E> {
         E e = array[index];
         while (index < heapSize >> 1) {
             if ((childIndex = (index + 1) << 1) < heapSize) {
-                childIndex = array[childIndex].compareTo(array[childIndex - 1]) > 0 ? childIndex : childIndex - 1;
+                childIndex = array[childIndex].compareTo(array[childIndex - 1]) < 0 ? childIndex : childIndex - 1;
             } else {
                 childIndex -= 1;
             }
-            if (e.compareTo(array[childIndex]) < 0) {
+            if (e.compareTo(array[childIndex]) > 0) {
                 array[index] = array[childIndex];
                 index = childIndex;
                 continue;
@@ -144,9 +144,9 @@ public class MaxHeap<E extends Comparable<E>> implements Heap<E> {
     }
     
     /**
-     * 弹出堆中的最大值
+     * 弹出堆中的最小值
      *
-     * @return 堆中的最大元素
+     * @return 堆中的最小元素
      */
     @Override
     public E pop() {
@@ -158,9 +158,9 @@ public class MaxHeap<E extends Comparable<E>> implements Heap<E> {
     }
     
     /**
-     * 获取最大元素值而不弹出该值
+     * 获取最小元素值而不弹出该值
      *
-     * @return 最大元素值
+     * @return 最小元素值
      */
     @Override
     public E peek() {
@@ -178,7 +178,7 @@ public class MaxHeap<E extends Comparable<E>> implements Heap<E> {
         while (index > 0) {
             // 如果子节点更大
             parentIndex = (index - 1) / 2;
-            if (e.compareTo(data[parentIndex]) > 0) {
+            if (e.compareTo(data[parentIndex]) < 0) {
                 data[index] = data[parentIndex];
                 index = parentIndex;
                 continue;
@@ -197,17 +197,17 @@ public class MaxHeap<E extends Comparable<E>> implements Heap<E> {
     private void shiftDown(int index) {
         int childIndex;
         E e = data[index];
-        // 最大堆的性质，后一半索引区域的元素为叶子节点
+        // 最小堆的性质，后一半索引区域的元素为叶子节点
         // 索引在前半区的时候需要判断
         while (index < count >> 1) {
             // 判断有没有右边的子节点
             if ((childIndex = (index + 1) << 1) < count) {
-                childIndex = data[childIndex].compareTo(data[childIndex - 1]) > 0 ? childIndex : childIndex - 1;
+                childIndex = data[childIndex].compareTo(data[childIndex - 1]) < 0 ? childIndex : childIndex - 1;
             } else {
                 childIndex -= 1;
             }
             // 如果子节点更大
-            if (e.compareTo(data[childIndex]) < 0) {
+            if (e.compareTo(data[childIndex]) > 0) {
                 data[index] = data[childIndex];
                 index = childIndex;
                 continue;
@@ -227,7 +227,7 @@ public class MaxHeap<E extends Comparable<E>> implements Heap<E> {
     public E[] sort() {
         E[] sortedData = Arrays.copyOf(data, count);
         for (int i = sortedData.length - 1; i > 1; i--) {
-            // 当前堆最大值放到后面
+            // 当前堆最小值放到后面
             swap(sortedData, 0, i);
             // 新上来的值进行下移
             shiftDown(sortedData, i, 0);

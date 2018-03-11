@@ -7,7 +7,7 @@ import java.util.Arrays;
  * @author CaoZiye
  * @version 1.0 2018/3/3 11:35
  */
-public class IndexMapHeap<E extends Comparable<E>> implements Heap<E> {
+public class IndexMinHeap<E extends Comparable<E>> implements IndexHeap<E> {
     
     /**
      * 堆化的索引数组
@@ -33,13 +33,13 @@ public class IndexMapHeap<E extends Comparable<E>> implements Heap<E> {
     protected int count;
     
     /**
-     * 指定堆容量，构造一个最大堆
+     * 指定堆容量，构造一个最小堆
      *
-     * @param clazz 元素类型
+     * @param clazz    元素类型
      * @param capacity 堆的容量
      */
     @SuppressWarnings("unchecked")
-    public IndexMapHeap(Class<E> clazz, int capacity) {
+    public IndexMinHeap(Class<E> clazz, int capacity) {
         assert capacity >= 0;
         this.data = (E[]) Array.newInstance(clazz, capacity);
         this.indexes = new int[capacity];
@@ -51,11 +51,11 @@ public class IndexMapHeap<E extends Comparable<E>> implements Heap<E> {
     }
     
     /**
-     * 使用现成的数组构造一个最大堆
+     * 使用现成的数组构造一个最小堆
      *
      * @param data 堆元素
      */
-    public IndexMapHeap(E[] data) {
+    public IndexMinHeap(E[] data) {
         assert data != null;
         this.data = Arrays.copyOf(data, data.length);
         this.indexes = new int[data.length];
@@ -65,7 +65,7 @@ public class IndexMapHeap<E extends Comparable<E>> implements Heap<E> {
         }
         this.capacity = data.length;
         this.count = capacity;
-        // 最大堆性质，后半区没有字节点
+        // 最小堆性质，后半区没有字节点
         for (int i = (count >> 1) - 1; i >= 0; i--) {
             shiftDown(i);
         }
@@ -84,11 +84,11 @@ public class IndexMapHeap<E extends Comparable<E>> implements Heap<E> {
         E e = array[index];
         while (index < heapSize >> 1) {
             if ((childIndex = (index + 1) << 1) < heapSize) {
-                childIndex = array[childIndex].compareTo(array[childIndex - 1]) > 0 ? childIndex : childIndex - 1;
+                childIndex = array[childIndex].compareTo(array[childIndex - 1]) < 0 ? childIndex : childIndex - 1;
             } else {
                 childIndex -= 1;
             }
-            if (e.compareTo(array[childIndex]) < 0) {
+            if (e.compareTo(array[childIndex]) > 0) {
                 array[index] = array[childIndex];
                 index = childIndex;
                 continue;
@@ -105,8 +105,14 @@ public class IndexMapHeap<E extends Comparable<E>> implements Heap<E> {
      * @param i     索引一
      * @param j     索引二
      */
-    private static <E extends Comparable<E>> void swap(E[] array, int i, int j) {
+    private static <E> void swap(E[] array, int i, int j) {
         E temp = array[i];
+        array[i] = array[j];
+        array[j] = temp;
+    }
+    
+    private static void swap(int[] array, int i, int j) {
+        int temp = array[i];
         array[i] = array[j];
         array[j] = temp;
     }
@@ -139,9 +145,7 @@ public class IndexMapHeap<E extends Comparable<E>> implements Heap<E> {
         for (int i = count; ; i++) {
             if (indexes[i] == index) {
                 // 交换indexes
-                int temp = indexes[count];
-                indexes[count] = index;
-                indexes[i] = temp;
+                swap(indexes, count, i);
                 reverse[index] = count;
                 shiftUp(count++);
                 break;
@@ -164,7 +168,7 @@ public class IndexMapHeap<E extends Comparable<E>> implements Heap<E> {
     }
     
     /**
-     * 删除原数组中指定位置的元素，仍然需要构成最大堆
+     * 删除原数组中指定位置的元素，仍然需要构成最小堆
      * 对于索引堆，增删元素不仅需要维护 indexes 以及 reverse
      * indexes 在 count 范围之外的元素需要保留，便于 add 操作快速定位空缺位置
      *
@@ -191,9 +195,9 @@ public class IndexMapHeap<E extends Comparable<E>> implements Heap<E> {
     }
     
     /**
-     * 弹出堆中的最大值
+     * 弹出堆中的最小值
      *
-     * @return 堆中的最大元素
+     * @return 堆中的最小元素
      */
     @Override
     public E pop() {
@@ -213,9 +217,9 @@ public class IndexMapHeap<E extends Comparable<E>> implements Heap<E> {
     }
     
     /**
-     * 获取最大元素值而不弹出该值
+     * 获取最小元素值而不弹出该值
      *
-     * @return 最大元素值
+     * @return 最小元素值
      */
     @Override
     public E peek() {
@@ -223,12 +227,34 @@ public class IndexMapHeap<E extends Comparable<E>> implements Heap<E> {
     }
     
     /**
-     * 返回最大元素的索引
+     * 返回最小元素的索引
      *
-     * @return 最大元素的索引
+     * @return 最小元素的索引
      */
     public int getMaxIndex() {
         return indexes[0];
+    }
+    
+    @Override
+    public boolean contain(int index) {
+        assert index >= 0 && index < capacity;
+        return reverse[index] != -1;
+    }
+    
+    /**
+     * 改变原数组中的一个元素，重新堆化
+     * 需要保证原索引处有值
+     *
+     * @param index  要改变的索引
+     * @param newOne 新元素
+     */
+    @Override
+    public void change(int index, E newOne) {
+        assert contain(index);
+        
+        data[index] = newOne;
+        shiftDown(reverse[index]);
+        shiftUp(reverse[index]);
     }
     
     /**
@@ -241,15 +267,15 @@ public class IndexMapHeap<E extends Comparable<E>> implements Heap<E> {
         int i = indexes[index];
         E e = data[i];
         while (index > 0) {
-            // 如果子节点更大
+            // 如果子节点更小
             parentIndex = (index - 1) / 2;
-            if (e.compareTo(data[indexes[parentIndex]]) > 0) {
+            if (e.compareTo(data[indexes[parentIndex]]) < 0) {
                 indexes[index] = indexes[parentIndex];
                 reverse[indexes[index]] = index;
                 index = parentIndex;
                 continue;
             }
-            // 如果父节点大于或者等于子节点，终止操作
+            // 如果父节点小于或者等于子节点，终止操作
             break;
         }
         indexes[index] = i;
@@ -265,24 +291,24 @@ public class IndexMapHeap<E extends Comparable<E>> implements Heap<E> {
         int childIndex;
         int i = indexes[index];
         E e = data[i];
-        // 最大堆的性质，后一半索引区域的元素为叶子节点
+        // 最小堆的性质，后一半索引区域的元素为叶子节点
         // 索引在前半区的时候需要判断
         while (index < count >> 1) {
             // 判断有没有右边的子节点
             if ((childIndex = (index + 1) << 1) < count) {
-                childIndex = data[indexes[childIndex]].compareTo(data[indexes[childIndex - 1]]) > 0 ?
+                childIndex = data[indexes[childIndex]].compareTo(data[indexes[childIndex - 1]]) < 0 ?
                         childIndex : childIndex - 1;
             } else {
                 childIndex -= 1;
             }
-            // 如果子节点更大
-            if (e.compareTo(data[indexes[childIndex]]) < 0) {
+            // 如果子节点更小
+            if (e.compareTo(data[indexes[childIndex]]) > 0) {
                 indexes[index] = indexes[childIndex];
                 reverse[indexes[index]] = index;
                 index = childIndex;
                 continue;
             }
-            // 没有子节点更大，终止操作
+            // 没有子节点更小，终止操作
             break;
         }
         indexes[index] = i;
@@ -294,12 +320,12 @@ public class IndexMapHeap<E extends Comparable<E>> implements Heap<E> {
     @SuppressWarnings("unchecked")
     @Override
     public E[] sort() {
-        E[] sortedData =(E[]) Array.newInstance(data.getClass().getComponentType(), count);
+        E[] sortedData = (E[]) Array.newInstance(data.getClass().getComponentType(), count);
         for (int i = 0; i < count; i++) {
             sortedData[i] = data[indexes[i]];
         }
         for (int i = sortedData.length - 1; i > 1; i--) {
-            // 当前堆最大值放到后面
+            // 当前堆最小值放到后面
             swap(sortedData, 0, i);
             // 新上来的值进行下移
             shiftDown(sortedData, i, 0);

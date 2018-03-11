@@ -4,7 +4,7 @@ package com.kun.graph.weighted;
  * @author CaoZiye
  * @version 1.0 2018/3/11 11:22
  */
-public class Edge<W extends Comparable<W>> implements Comparable<Edge<W>> {
+public class Edge<W extends Number & Comparable<W>> implements Comparable<Edge<W>> {
     
     /**
      * 记录两边节点索引，作有向图时，顺序由要求

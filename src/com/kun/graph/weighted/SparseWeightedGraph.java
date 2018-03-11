@@ -12,7 +12,7 @@ import java.util.stream.Stream;
  * @author CaoZiye
  * @version 1.0 2018/3/8 23:11
  */
-public class SparseWeightedGraph<W extends Comparable<W>> implements WeightedGraph<W> {
+public class SparseWeightedGraph<W extends Number & Comparable<W>> implements WeightedGraph<W> {
     
     /**
      * 顶点数
