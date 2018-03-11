@@ -6,9 +6,9 @@ package com.kun.graph;
  */
 public interface Graph {
     
-    int getVertex();
+    int getVertices();
     
-    int getEdge();
+    int getEdges();
     
     void addEdge(int i, int j);
     

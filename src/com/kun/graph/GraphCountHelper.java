@@ -37,9 +37,9 @@ public class GraphCountHelper {
     public static GraphCountHelper build(Graph graph) {
         GraphCountHelper graphCountHelper = new GraphCountHelper();
         graphCountHelper.graph = graph;
-        graphCountHelper.visited = new boolean[graph.getVertex()];
+        graphCountHelper.visited = new boolean[graph.getVertices()];
         graphCountHelper.count = 0;
-        graphCountHelper.id = new int[graph.getVertex()];
+        graphCountHelper.id = new int[graph.getVertices()];
         for (int i = 0; i < graphCountHelper.id.length; i++) {
             graphCountHelper.id[i] = i;
         }
@@ -51,7 +51,7 @@ public class GraphCountHelper {
      * 遍历入口
      */
     private void traverse() {
-        for (int i = 0; i < graph.getVertex(); i++) {
+        for (int i = 0; i < graph.getVertices(); i++) {
             if (!visited[i]) {
                 count++;
                 dfs(i);
@@ -88,8 +88,8 @@ public class GraphCountHelper {
      * @return 联通，返回 true；否则返回 false
      */
     public boolean isConnected(int i, int j) {
-        assert i >= 0  && i < graph.getVertex();
-        assert j >= 0  && j < graph.getVertex();
+        assert i >= 0  && i < graph.getVertices();
+        assert j >= 0  && j < graph.getVertices();
         return id[i] == id[j];
     }
     

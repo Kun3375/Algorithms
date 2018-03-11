@@ -32,8 +32,8 @@ public class GraphPathHelper {
     public static GraphPathHelper build(Graph graph, int vertex) {
         GraphPathHelper graphPathHelper = new GraphPathHelper();
         graphPathHelper.graph = graph;
-        graphPathHelper.visited = new boolean[graph.getVertex()];
-        graphPathHelper.from = new int[graph.getVertex()];
+        graphPathHelper.visited = new boolean[graph.getVertices()];
+        graphPathHelper.from = new int[graph.getVertices()];
         for (int i = 0; i < graphPathHelper.from.length; i++) {
             graphPathHelper.from[i] = -1;
         }
@@ -61,7 +61,7 @@ public class GraphPathHelper {
      * @return 存在路径返回 true；否则返回 false
      */
     public boolean hasPath(int dest) {
-        assert dest >= 0  && dest < graph.getVertex();
+        assert dest >= 0  && dest < graph.getVertices();
         return visited[dest];
     }
     

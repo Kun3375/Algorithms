@@ -1,6 +1,9 @@
-package com.kun.graph;
+package com.kun.graph.weighted;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * 使用邻接矩阵 adjacency matrix 实现图
@@ -9,7 +12,7 @@ import java.util.ArrayList;
  * @author CaoZiye
  * @version 1.0 2018/3/8 22:50
  */
-public class DenseGraph implements Graph {
+public class DenseWeightedGraph<W extends Comparable<W>> implements WeightedGraph<W> {
     
     /**
      * 顶点数
@@ -31,14 +34,15 @@ public class DenseGraph implements Graph {
      * 使用布尔，可以直接过滤掉平行边的情况
      * 如果需要考虑平行边，可以使用整型
      */
-    private boolean[][] matrix;
+    private Edge<W>[][] matrix;
     
-    public DenseGraph(int vertices, boolean directed) {
+    public DenseWeightedGraph(int vertices, boolean directed) {
         assert vertices >= 0;
         this.vertices = vertices;
         this.edges = 0;
         this.directed = directed;
-        this.matrix = new boolean[vertices][vertices];
+        //noinspection unchecked
+        this.matrix = new Edge[vertices][vertices];
     }
     
     @Override
@@ -52,14 +56,18 @@ public class DenseGraph implements Graph {
     }
     
     @Override
-    public void addEdge(int i, int j) {
-        if (hasEdge(i, j)) {
-            return;
-        }
+    public void addEdge(Edge<W> edge) {
+        int f = edge.getFrom();
+        int t = edge.getTo();
+        assert f >= 0 && f < vertices;
+        assert t >= 0 && t < vertices;
+        
+        // 新的重复的边的添加，覆盖原来的
+        
         edges++;
-        matrix[i][j] = true;
-        if (!directed) {
-            matrix[j][i] = true;
+        matrix[f][t] = edge;
+        if (f != t && !directed) {
+            matrix[t][f] = new Edge<>(t, f, edge.getWeight());
         }
     }
     
@@ -68,33 +76,21 @@ public class DenseGraph implements Graph {
         assert i >= 0 && i < vertices;
         assert j >= 0 && j < vertices;
         
-        return matrix[i][j];
+        return matrix[i][j] != null;
     }
     
     @Override
-    public Iterable<Integer> getAdjacencyVertices(int i) {
+    public Iterable<Edge<W>> getAdjacencyVertices(int i) {
         ArrayList<Integer> list = new ArrayList<>();
-        for (int j = 0; j < matrix[i].length; j++) {
-            if (matrix[i][j]) {
-                list.add(j);
-            }
-        }
-        return list;
+        return Arrays.stream(matrix[i]).filter(Objects::nonNull).collect(Collectors.toList());
     }
     
     @Override
     public void show() {
-        
-        System.out.print("   ");
-        for (int i = 0; i < vertices; i++) {
-            System.out.print(String.format("% 4d", i));
-        }
-        System.out.println();
-        
         for (int i = 0; i < matrix.length; i++) {
-            System.out.print(String.format("% 3d", i));
+            System.out.print(String.format("% 3d    ", i));
             for (int j = 0; j < matrix[i].length; j++) {
-                System.out.print(String.format("% 4d",(matrix[i][j] ? 1 : 0)));
+                System.out.print(matrix[i][j] == null ? "          \t" : matrix[i][j] + "\t");
             }
             System.out.println();
         }

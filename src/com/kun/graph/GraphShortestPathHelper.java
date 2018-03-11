@@ -37,9 +37,9 @@ public class GraphShortestPathHelper {
     public static GraphShortestPathHelper build(Graph graph, int vertex) {
         GraphShortestPathHelper helper = new GraphShortestPathHelper();
         helper.graph = graph;
-        helper.visited = new boolean[graph.getVertex()];
-        helper.from = new int[graph.getVertex()];
-        helper.distance = new int[graph.getVertex()];
+        helper.visited = new boolean[graph.getVertices()];
+        helper.from = new int[graph.getVertices()];
+        helper.distance = new int[graph.getVertices()];
         for (int i = 0; i < helper.from.length; i++) {
             helper.from[i] = -1;
             helper.distance[i] = -1;
@@ -79,7 +79,7 @@ public class GraphShortestPathHelper {
      * @return 返回最短距离，路径不存在时返回 -1
      */
     public int getDistance(int dest) {
-        assert dest >= 0 && dest < graph.getVertex();
+        assert dest >= 0 && dest < graph.getVertices();
         return distance[dest];
     }
     
@@ -90,7 +90,7 @@ public class GraphShortestPathHelper {
      * @return 存在路径返回 true；否则返回 false
      */
     public boolean hasPath(int dest) {
-        assert dest >= 0 && dest < graph.getVertex();
+        assert dest >= 0 && dest < graph.getVertices();
         return visited[dest];
     }
     
