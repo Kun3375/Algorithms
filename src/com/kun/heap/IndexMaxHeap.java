@@ -240,6 +240,16 @@ public class IndexMaxHeap<E extends Comparable<E>> implements IndexHeap<E> {
     }
     
     /**
+     * 查看指定位置的元素
+     * @param index 指定索引
+     * @return 原数组中的元素
+     */
+    @Override
+    public E peekIndex(int index) {
+        return data[index];
+    }
+    
+    /**
      * 返回最大元素的索引
      *
      * @return 最大元素的索引

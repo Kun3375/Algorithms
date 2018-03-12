@@ -27,10 +27,6 @@ public class PrimMST<W extends Number & Comparable<W>> {
      */
     private IndexMinHeap<Edge<W>> priorityQueue;
     /**
-     * 由于索引堆只存放，横切边的权值，所以需要一个额外的数组存放边信息
-     */
-    private Edge<W>[] edgeTo;
-    /**
      * 用来标记相应的节点是否被访问过
      */
     private boolean[] marked;
@@ -52,16 +48,15 @@ public class PrimMST<W extends Number & Comparable<W>> {
         // 使用索引堆的实现
         IndexMinHeap temp = new IndexMinHeap<>(Edge.class, graph.getVertices());
         this.priorityQueue = (IndexMinHeap<Edge<W>>) temp;
-        this.edgeTo = new Edge[graph.getVertices()];
         this.marked = new boolean[graph.getVertices()];
         this.mst = new ArrayList<>();
         
         visit(0);
         
         while (!priorityQueue.isEmpty()) {
-            int v = priorityQueue.popIndex();
-            mst.add(edgeTo[v]);
-            visit(v);
+            Edge<W> edge = priorityQueue.pop();
+            mst.add(edge);
+            visit(edge.getTo());
         }
         
         // 计算权重
@@ -83,14 +78,10 @@ public class PrimMST<W extends Number & Comparable<W>> {
             // 判断对面定点是否被访问过，访问过了就不需要处理了，因为这个边不是横切边了
             if (!marked[to]) {
                 // 这个对节点没有最小边的记录，就新增记录
-                if (edgeTo[to] == null) {
-                    // edgeTo 保存边信息
-                    edgeTo[to] = e;
-                    // 索引堆按权值插入
+                if (!priorityQueue.contain(to)) {
                     priorityQueue.insert(e, to);
-                } else if (edgeTo[to].getWeight().compareTo(e.getWeight()) > 0) {
+                } else if (priorityQueue.peekIndex(to).getWeight().compareTo(e.getWeight()) > 0) {
                     // 如果新发现的边比曾经记录的权值更小，需要更新
-                    edgeTo[to] = e;
                     priorityQueue.change(to, e);
                 }
             }

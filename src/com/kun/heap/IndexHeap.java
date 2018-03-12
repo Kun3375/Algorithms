@@ -8,6 +8,8 @@ public interface IndexHeap<E extends Comparable<E>> extends Heap<E> {
     
     int popIndex();
     
+    E peekIndex(int index);
+    
     boolean contain(int index);
     
     void change(int index, E newOne);
