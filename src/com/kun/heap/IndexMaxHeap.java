@@ -143,16 +143,9 @@ public class IndexMaxHeap<E extends Comparable<E>> implements IndexHeap<E> {
         assert count < capacity && reverse[index] == -1;
         data[index] = datum;
         
-        for (int i = count; ; i++) {
-            if (indexes[i] == index) {
-                // 交换indexes
-                swap(indexes, count, i);
-                reverse[index] = count;
-                shiftUp(count++);
-                break;
-            }
-        }
-        
+        indexes[count] = index;
+        reverse[index] = count;
+        shiftUp(count++);
     }
     
     /**

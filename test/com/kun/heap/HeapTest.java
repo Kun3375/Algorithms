@@ -31,18 +31,22 @@ public class HeapTest {
         printSort(indexMaxHeap);
         printHeap(indexMaxHeap);
         printIndexAndReverse(indexMaxHeap);
+        System.out.println("===================================");
         indexMaxHeap.remove(4);
         printSort(indexMaxHeap);
         printHeap(indexMaxHeap);
         printIndexAndReverse(indexMaxHeap);
+        System.out.println("===================================");
         indexMaxHeap.insert(9, 4);
         printSort(indexMaxHeap);
         printHeap(indexMaxHeap);
         printIndexAndReverse(indexMaxHeap);
+        System.out.println("===================================");
         indexMaxHeap.pop();
         printSort(indexMaxHeap);
         printHeap(indexMaxHeap);
         printIndexAndReverse(indexMaxHeap);
+        System.out.println("===================================");
         while (!indexMaxHeap.isEmpty()) {
             System.out.print(indexMaxHeap.pop() + " ");
         }
