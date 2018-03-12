@@ -43,6 +43,7 @@ public class IndexMaxHeap<E extends Comparable<E>> implements IndexHeap<E> {
         assert capacity >= 0;
         this.data = (E[]) Array.newInstance(clazz, capacity);
         this.indexes = new int[capacity];
+        this.reverse = new int[capacity];
         for (int i = 0; i < this.reverse.length; i++) {
             this.reverse[i] = -1;
         }
@@ -206,15 +207,34 @@ public class IndexMaxHeap<E extends Comparable<E>> implements IndexHeap<E> {
         // reverse中标记该位置元素已删除
         reverse[indexes[0]] = -1;
         // 交换索引，为了使count位确定为被移除的元素，这样add时候不需要遍历可以直接定位
-        int temp = indexes[0];
-        indexes[0] = indexes[--count];
-        indexes[count] = temp;
+        swap(indexes, 0, --count);
         // 把实际索引挂载到reverse上
         reverse[indexes[0]] = 0;
         // indexes[0]使最小元素需要shiftDown
         shiftDown(0);
         return max;
     }
+    
+    /**
+     * 弹出最大值在原数组中的索引
+     *
+     * @return 最大值在原数组中的索引
+     */
+    @Override
+    public int popIndex() {
+        assert !isEmpty();
+        int index = indexes[0];
+        // reverse中标记该位置元素已删除
+        reverse[indexes[0]] = -1;
+        // 交换索引，为了使count位确定为被移除的元素，这样add时候不需要遍历可以直接定位
+        swap(indexes, 0, --count);
+        // 把实际索引挂载到reverse上
+        reverse[indexes[0]] = 0;
+        // indexes[0]使最小元素需要shiftDown
+        shiftDown(0);
+        return index;
+    }
+    
     
     /**
      * 获取最大元素值而不弹出该值

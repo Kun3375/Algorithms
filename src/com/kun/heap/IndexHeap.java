@@ -6,6 +6,8 @@ package com.kun.heap;
  */
 public interface IndexHeap<E extends Comparable<E>> extends Heap<E> {
     
+    int popIndex();
+    
     boolean contain(int index);
     
     void change(int index, E newOne);

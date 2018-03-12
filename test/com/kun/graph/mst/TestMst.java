@@ -32,12 +32,18 @@ public class TestMst {
     }
     
     @Test
-    public void testLazyMst() {
+    public void testLazyPrimMst() {
         LazyPrimMST<Double> mst = new LazyPrimMST<>(graph);
+        mst.getMst().forEach(System.out::println);
         Number totalWeight = mst.getTotalWeight();
         System.out.println("totalWeight = " + totalWeight);
-        mst.getMst().forEach(System.out::println);
     }
     
-
+    @Test
+    public void testPrimMst() {
+        PrimMST<Double> mst = new PrimMST<>(graph);
+        mst.getMst().forEach(System.out::println);
+        Number totalWeight = mst.getTotalWeight();
+        System.out.println("totalWeight = " + totalWeight);
+    }
 }
