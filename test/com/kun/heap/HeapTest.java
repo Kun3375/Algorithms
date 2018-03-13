@@ -53,6 +53,16 @@ public class HeapTest {
         System.out.println();
         printHeap(indexMaxHeap);
         printIndexAndReverse(indexMaxHeap);
+        System.out.println("===================================");
+        indexMaxHeap.add(15);
+        printSort(indexMaxHeap);
+        printHeap(indexMaxHeap);
+        printIndexAndReverse(indexMaxHeap);
+        System.out.println("===================================");
+        indexMaxHeap.insert(17, 7);
+        printSort(indexMaxHeap);
+        printHeap(indexMaxHeap);
+        printIndexAndReverse(indexMaxHeap);
     }
     
     @Test

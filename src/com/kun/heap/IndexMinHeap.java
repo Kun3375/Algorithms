@@ -45,7 +45,7 @@ public class IndexMinHeap<E extends Comparable<E>> implements IndexHeap<E> {
         this.indexes = new int[capacity];
         this.reverse = new int[capacity];
         for (int i = 0; i < this.reverse.length; i++) {
-            this.reverse[i] = -1;
+            this.reverse[i] = this.indexes[i] = -1;
         }
         this.capacity = capacity;
         this.count = 0;
@@ -156,6 +156,19 @@ public class IndexMinHeap<E extends Comparable<E>> implements IndexHeap<E> {
     @Override
     public void add(E datum) {
         assert count < capacity;
+        // 该位置没用过，需要找空位
+        if (indexes[count] == -1) {
+            for (int i = 0; i < reverse.length; i++) {
+                if (reverse[i] == -1) {
+                    data[i] = datum;
+                    indexes[count] = i;
+                    reverse[i] = count;
+                    shiftUp(count++);
+                    return;
+                }
+            }
+        }
+        // 该位置之前使用过，可以快速定位到空闲的坑
         data[indexes[count]] = datum;
         reverse[indexes[count]] = count;
         shiftUp(count++);
@@ -346,13 +359,12 @@ public class IndexMinHeap<E extends Comparable<E>> implements IndexHeap<E> {
         for (int i = 0; i < count; i++) {
             sortedData[i] = data[indexes[i]];
         }
-        for (int i = sortedData.length - 1; i > 1; i--) {
+        for (int i = sortedData.length - 1; i > 0; i--) {
             // 当前堆最小值放到后面
             swap(sortedData, 0, i);
             // 新上来的值进行下移
             shiftDown(sortedData, i, 0);
         }
-        swap(sortedData, 0, 1);
         return sortedData;
     }
     

@@ -46,4 +46,12 @@ public class TestMst {
         Number totalWeight = mst.getTotalWeight();
         System.out.println("totalWeight = " + totalWeight);
     }
+    
+    @Test
+    public void testKruskal() {
+        KruskalMST<Double> mst = new KruskalMST<>(graph);
+        mst.getMst().forEach(System.out::println);
+        Number totalWeight = mst.getTotalWeight();
+        System.out.println("totalWeight = " + totalWeight);
+    }
 }
