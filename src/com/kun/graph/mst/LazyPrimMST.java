@@ -10,7 +10,9 @@ import java.util.List;
 /**
  * 求图的最小生成树
  * Lazy Prim 算法
- * 基于堆实现 O(ELogE)
+ * 基于切分定理和堆实现 O(ELogE)
+ * 切分定理：对于任意给定的切分，权值最小的**横切边**必定属于最小生成树的一边
+ * Lazy Prim：从给定的源开始作切分，知道最小生成树已经纳入全部节点
  *
  * @author CaoZiye
  * @version 1.0 2018/3/11 20:47

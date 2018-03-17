@@ -3,7 +3,6 @@ package com.kun.graph.mst;
 import com.kun.graph.weighted.Edge;
 import com.kun.graph.weighted.WeightedGraph;
 import com.kun.heap.IndexMinHeap;
-import com.kun.heap.MinHeap;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,6 +11,7 @@ import java.util.List;
  * 求图的最小生成树
  * 改进的 Prim 算法
  * 由堆辅助实现改进为索引堆实现 O(ELogV)
+ * 使用索引堆的优势：可以按节点索引，不用再添加重复的边；基于索引堆，动态刷新节点的最小边候选，效率高
  *
  * @author CaoZiye
  * @version 1.0 2018/3/11 20:47
