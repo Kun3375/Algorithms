@@ -19,7 +19,7 @@ import java.util.Iterator;
  * @version 1.0 2018/3/17 14:30
  */
 public class BellmanFordPath<W extends Number & Comparable<W>> {
-    
+
     /**
      * 保存一个图的引用
      */
@@ -40,7 +40,7 @@ public class BellmanFordPath<W extends Number & Comparable<W>> {
      * 是否存在负权环
      */
     private boolean hasNegativeCycle;
-    
+
     @SuppressWarnings("unchecked")
     public BellmanFordPath(WeightedGraph<W> graph, int start) {
         // 初始化
@@ -49,11 +49,11 @@ public class BellmanFordPath<W extends Number & Comparable<W>> {
         this.start = start;
         this.distance = new Number[graph.getVertices()];
         this.from = (Edge<W>[]) new Edge[graph.getVertices()];
-        
+
         // 初始化源点信息，保证源点可达（不然一切都没了意义）
         distance[start] = 0;
         from[start] = new Edge<>(start, start, (W) (Number) 0);
-        
+
         // Bellman-Ford 算法十分暴力（愚蠢），直接对所有顶点尝试循环 V 次松弛
         // v - 1 次确定最短路径，第 V 次判断负权环的存在
         for (int i = 1; i < graph.getVertices(); i++) {
@@ -69,25 +69,25 @@ public class BellmanFordPath<W extends Number & Comparable<W>> {
                 graph.getAdjacencyVertices(j).forEach(this::relaxation);
             }
         }
-        
+
         // 再执行第 v 次，判断是否有负权环
         judge:
         for (int i = 0; i < graph.getVertices(); i++) {
             if (from[i] == null) {
                 continue;
             }
-            Iterator<Edge<W>> iterator = graph.getAdjacencyVertices(i).iterator();
-            while (iterator.hasNext()) {
-                if (relaxation(iterator.next())) {
+            for (Edge<W> wEdge : graph.getAdjacencyVertices(i)) {
+                if (relaxation(wEdge)) {
                     hasNegativeCycle = true;
                     break judge;
                 }
             }
         }
     }
-    
+
     /**
      * 松弛操作
+     *
      * @param edge 通向尝试松弛点的边
      * @return 是否松弛成功
      */
@@ -102,15 +102,16 @@ public class BellmanFordPath<W extends Number & Comparable<W>> {
         }
         return false;
     }
-    
+
     /**
      * 是否存在负权环
+     *
      * @return 是否存在负权环
      */
     public boolean isHasNegativeCycle() {
         return hasNegativeCycle;
     }
-    
+
     /**
      * 获取目标点到源点的最短路径长度
      *
@@ -121,7 +122,7 @@ public class BellmanFordPath<W extends Number & Comparable<W>> {
         assert hasPath(dest);
         return distance[dest];
     }
-    
+
     /**
      * 判断目标点与源点之间是否存在路径
      *
@@ -133,7 +134,7 @@ public class BellmanFordPath<W extends Number & Comparable<W>> {
         assert dest >= 0 && dest < graph.getVertices();
         return from[dest] != null;
     }
-    
+
     /**
      * 迭代到目标点的最短路径
      *
@@ -151,14 +152,14 @@ public class BellmanFordPath<W extends Number & Comparable<W>> {
         }
         return deque;
     }
-    
+
     public void printShortestPath(int dest) {
         System.out.print(start);
-        getShortestPath(dest).forEach(e -> {
-            System.out.print(" -> " + e.getTo());
-        });
+        getShortestPath(dest).forEach(e ->
+            System.out.print(" -> " + e.getTo())
+        );
         System.out.println();
     }
-    
-    
+
+
 }

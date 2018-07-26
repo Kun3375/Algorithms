@@ -10,7 +10,7 @@ import java.util.Arrays;
  * @version 1.0 2018/2/25 14:53
  */
 public class MaxHeap<E extends Comparable<E>> implements Heap<E> {
-    
+
     /**
      * 使用数组容纳元素，每个子节点 n，父节点为 (n - 1) / 2
      */
@@ -23,11 +23,11 @@ public class MaxHeap<E extends Comparable<E>> implements Heap<E> {
      * 该堆当前元素个数
      */
     protected int count;
-    
+
     /**
      * 指定堆容量，构造一个最大堆
      *
-     * @param clazz 元素类型
+     * @param clazz    元素类型
      * @param capacity 堆的容量
      */
     @SuppressWarnings("unchecked")
@@ -37,7 +37,7 @@ public class MaxHeap<E extends Comparable<E>> implements Heap<E> {
         this.capacity = capacity;
         this.count = 0;
     }
-    
+
     /**
      * 使用现成的数组构造一个最大堆
      *
@@ -53,7 +53,7 @@ public class MaxHeap<E extends Comparable<E>> implements Heap<E> {
             shiftDown(i);
         }
     }
-    
+
     /**
      * 对数组进行堆排序
      * 如果需要对单个实例堆中的元素排序，只需要 pop 即可
@@ -75,7 +75,7 @@ public class MaxHeap<E extends Comparable<E>> implements Heap<E> {
         }
         swap(array, 0, 1);
     }
-    
+
     /**
      * 为 shiftDown 提供的静态实现
      *
@@ -102,7 +102,7 @@ public class MaxHeap<E extends Comparable<E>> implements Heap<E> {
         }
         array[index] = e;
     }
-    
+
     /**
      * 交换数组中的两个元素
      *
@@ -115,22 +115,22 @@ public class MaxHeap<E extends Comparable<E>> implements Heap<E> {
         array[i] = array[j];
         array[j] = temp;
     }
-    
+
     @Override
     public int size() {
         return count;
     }
-    
+
     @Override
     public int capacity() {
         return capacity;
     }
-    
+
     @Override
     public boolean isEmpty() {
         return count == 0;
     }
-    
+
     /**
      * 向堆中添加一个元素
      *
@@ -142,7 +142,7 @@ public class MaxHeap<E extends Comparable<E>> implements Heap<E> {
         data[count] = datum;
         shiftUp(count++);
     }
-    
+
     /**
      * 弹出堆中的最大值
      *
@@ -156,7 +156,7 @@ public class MaxHeap<E extends Comparable<E>> implements Heap<E> {
         shiftDown(0);
         return max;
     }
-    
+
     /**
      * 获取最大元素值而不弹出该值
      *
@@ -166,7 +166,7 @@ public class MaxHeap<E extends Comparable<E>> implements Heap<E> {
     public E peek() {
         return data[0];
     }
-    
+
     /**
      * 元素上移操作，调整至堆中合理位置
      *
@@ -188,7 +188,7 @@ public class MaxHeap<E extends Comparable<E>> implements Heap<E> {
         }
         data[index] = e;
     }
-    
+
     /**
      * 元素下移操作，调整至队中合理位置
      *
@@ -217,7 +217,7 @@ public class MaxHeap<E extends Comparable<E>> implements Heap<E> {
         }
         data[index] = e;
     }
-    
+
     /**
      * 获得堆中元素排序后的数组
      *
@@ -235,5 +235,5 @@ public class MaxHeap<E extends Comparable<E>> implements Heap<E> {
         swap(sortedData, 0, 1);
         return sortedData;
     }
-    
+
 }

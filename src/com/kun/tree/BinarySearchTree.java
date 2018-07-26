@@ -11,19 +11,19 @@ import java.util.function.Consumer;
  * @version 1.0 2018/3/4 11:31
  */
 public class BinarySearchTree<K extends Comparable<K>, V> {
-    
+
     private Node<K, V> root;
-    
+
     private int count;
-    
+
     public int size() {
         return count;
     }
-    
+
     public boolean isEmpty() {
         return count == 0;
     }
-    
+
     /**
      * 向树中添加键值对，key 不允许 null，key 相等时将更新 value
      * key 必须重写 {@link Object#equals(Object)} 方法，并推荐使用不可变对象类型
@@ -34,7 +34,7 @@ public class BinarySearchTree<K extends Comparable<K>, V> {
     public void put(K key, V value) {
         root = put(root, key, value);
     }
-    
+
     /**
      * 判断树中是否包含该键
      *
@@ -44,7 +44,7 @@ public class BinarySearchTree<K extends Comparable<K>, V> {
     public boolean contain(K key) {
         return contain(root, key);
     }
-    
+
     /**
      * 取得树中该键的对应值
      *
@@ -54,7 +54,7 @@ public class BinarySearchTree<K extends Comparable<K>, V> {
     public V get(K key) {
         return get(root, key);
     }
-    
+
     /**
      * 前序遍历
      *
@@ -66,7 +66,7 @@ public class BinarySearchTree<K extends Comparable<K>, V> {
             preOrder(root, consumer);
         }
     }
-    
+
     /**
      * 中序遍历
      *
@@ -77,7 +77,7 @@ public class BinarySearchTree<K extends Comparable<K>, V> {
             inOrder(root, consumer);
         }
     }
-    
+
     /**
      * 后序遍历
      *
@@ -88,7 +88,7 @@ public class BinarySearchTree<K extends Comparable<K>, V> {
             postOrder(root, consumer);
         }
     }
-    
+
     /**
      * 广度优先，层级遍历
      *
@@ -101,7 +101,7 @@ public class BinarySearchTree<K extends Comparable<K>, V> {
             levelOrder(consumer, queue);
         }
     }
-    
+
     /**
      * 获取最大键的 Node
      *
@@ -110,7 +110,7 @@ public class BinarySearchTree<K extends Comparable<K>, V> {
     public Node<K, V> getMax() {
         return root == null ? null : getMax(root);
     }
-    
+
     /**
      * 获取最小键的 Node
      *
@@ -119,7 +119,7 @@ public class BinarySearchTree<K extends Comparable<K>, V> {
     public Node<K, V> getMin() {
         return root == null ? null : getMin(root);
     }
-    
+
     /**
      * 删除最大的键的节点
      */
@@ -129,7 +129,7 @@ public class BinarySearchTree<K extends Comparable<K>, V> {
         }
         root = removeMax(root);
     }
-    
+
     /**
      * 删除最小的键的节点
      */
@@ -139,7 +139,7 @@ public class BinarySearchTree<K extends Comparable<K>, V> {
         }
         root = removeMin(root);
     }
-    
+
     /**
      * 删除指定 key 的节点
      *
@@ -148,9 +148,10 @@ public class BinarySearchTree<K extends Comparable<K>, V> {
     public void remove(K key) {
         root = remove(root, key);
     }
-    
+
     /**
      * 返回小于等于该 key 且最接近该 key 值的节点
+     *
      * @param key 搜索 key
      * @return floor node
      */
@@ -158,9 +159,10 @@ public class BinarySearchTree<K extends Comparable<K>, V> {
         // TODO
         return null;
     }
-    
+
     /**
      * 返回大于等于该 key 且最结金该 key 值的节点
+     *
      * @param key 搜索 key
      * @return ceil node
      */
@@ -168,9 +170,10 @@ public class BinarySearchTree<K extends Comparable<K>, V> {
         // TODO
         return null;
     }
-    
+
     /**
      * 返回指定键值的节点在序列中的位置，即第几个
+     *
      * @param key 搜索 key
      * @return key 在顺序序列中的位置，不存在返回 0
      */
@@ -178,17 +181,18 @@ public class BinarySearchTree<K extends Comparable<K>, V> {
         // TODO
         return 0;
     }
-    
+
     /**
      * 返回指定次序点的节点
+     *
      * @param rank 指定位置
      * @return 指定位置的元素，如果 rank 过大或者过小返回 null
      */
-    public Node<K, V> select (int rank) {
+    public Node<K, V> select(int rank) {
         // TODO
         return null;
     }
-    
+
     private Node<K, V> put(Node<K, V> node, K key, V value) {
         // 递归到底
         if (node == null) {
@@ -211,7 +215,7 @@ public class BinarySearchTree<K extends Comparable<K>, V> {
         node.value = value;
         return node;
     }
-    
+
     private boolean contain(Node<K, V> node, K key) {
         if (node == null) {
             return false;
@@ -225,7 +229,7 @@ public class BinarySearchTree<K extends Comparable<K>, V> {
         }
         return true;
     }
-    
+
     private V get(Node<K, V> node, K key) {
         if (node == null) {
             return null;
@@ -239,7 +243,7 @@ public class BinarySearchTree<K extends Comparable<K>, V> {
         }
         return node.value;
     }
-    
+
     private void preOrder(Node<K, V> node, Consumer<Node<K, V>> consumer) {
         consumer.accept(node);
         if (node.left != null) {
@@ -249,7 +253,7 @@ public class BinarySearchTree<K extends Comparable<K>, V> {
             preOrder(node.right, consumer);
         }
     }
-    
+
     private void inOrder(Node<K, V> node, Consumer<Node<K, V>> consumer) {
         if (node.left != null) {
             inOrder(node.left, consumer);
@@ -259,7 +263,7 @@ public class BinarySearchTree<K extends Comparable<K>, V> {
             inOrder(node.right, consumer);
         }
     }
-    
+
     private void postOrder(Node<K, V> node, Consumer<Node<K, V>> consumer) {
         if (node.left != null) {
             postOrder(node.left, consumer);
@@ -269,7 +273,7 @@ public class BinarySearchTree<K extends Comparable<K>, V> {
         }
         consumer.accept(node);
     }
-    
+
     private void levelOrder(Consumer<Node<K, V>> consumer, Queue<Node<K, V>> queue) {
         if (!queue.isEmpty()) {
             Node<K, V> node = queue.poll();
@@ -283,15 +287,15 @@ public class BinarySearchTree<K extends Comparable<K>, V> {
             levelOrder(consumer, queue);
         }
     }
-    
+
     private Node<K, V> getMax(Node<K, V> node) {
         return node.right == null ? node : getMax(node.right);
     }
-    
+
     private Node<K, V> getMin(Node<K, V> node) {
         return node.left == null ? node : getMin(node.left);
     }
-    
+
     private Node<K, V> removeMax(Node<K, V> node) {
         node.count--;
         if (node.right != null) {
@@ -305,7 +309,7 @@ public class BinarySearchTree<K extends Comparable<K>, V> {
         count--;
         return null;
     }
-    
+
     private Node<K, V> removeMin(Node<K, V> node) {
         node.count--;
         if (node.left != null) {
@@ -319,7 +323,7 @@ public class BinarySearchTree<K extends Comparable<K>, V> {
         count--;
         return null;
     }
-    
+
     private Node<K, V> remove(Node<K, V> node, K key) {
         // 递归到底，要删除的节点并不存在，返回 null
         if (node == null) {
@@ -358,29 +362,29 @@ public class BinarySearchTree<K extends Comparable<K>, V> {
         // 返回这个原右子树的最小节点代替本节点
         return successor;
     }
-    
+
     public static class Node<K extends Comparable<K>, V> {
-        
+
         private K key;
         private V value;
         private Node<K, V> left;
         private Node<K, V> right;
         private int count;
-        
+
         private Node(K key, V value) {
             this.key = key;
             this.value = value;
             this.count = 1;
         }
-        
+
         public K getKey() {
             return key;
         }
-        
+
         public V getValue() {
             return value;
         }
-        
+
         @Override
         public String toString() {
             return "Node{" +
@@ -390,6 +394,6 @@ public class BinarySearchTree<K extends Comparable<K>, V> {
                     '}';
         }
     }
-    
-    
+
+
 }

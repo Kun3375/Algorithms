@@ -15,7 +15,7 @@ public class TestShortestPath {
 
     private static WeightedGraph<Double> g1;
     private static WeightedGraph<Double> g2;
-    
+
     @SuppressWarnings("unchecked")
     @BeforeClass
     public static void init() {
@@ -38,7 +38,7 @@ public class TestShortestPath {
         g2.addEdge(new Edge(2, 3, 3));
         g2.addEdge(new Edge(4, 3, -3));
     }
-    
+
     @Test
     public void testDijkstra() {
         DijkstraPath<Double> dijkstraPath = new DijkstraPath<>(g1, 0);
@@ -47,7 +47,7 @@ public class TestShortestPath {
             dijkstraPath.printShortestPath(i);
         }
     }
-    
+
     @Test
     public void testBellmanFord() {
         BellmanFordPath<Double> bellmanFordPath = new BellmanFordPath<>(g2, 0);

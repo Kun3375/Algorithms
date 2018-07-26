@@ -18,7 +18,7 @@ import java.util.List;
  * @version 1.0 2018/3/11 20:47
  */
 public class LazyPrimMST<W extends Number & Comparable<W>> {
-    
+
     /**
      * 要处理的图的引用
      */
@@ -39,10 +39,10 @@ public class LazyPrimMST<W extends Number & Comparable<W>> {
      * 最小生成树的总权重
      */
     private Number totalWeight;
-    
+
     private LazyPrimMST() {
     }
-    
+
     @SuppressWarnings("unchecked")
     public LazyPrimMST(WeightedGraph<W> graph) {
         this.graph = graph;
@@ -52,10 +52,10 @@ public class LazyPrimMST<W extends Number & Comparable<W>> {
         this.priorityQueue = (MinHeap<Edge<W>>) temp;
         this.marked = new boolean[graph.getVertices()];
         this.mst = new ArrayList<>();
-        
+
         marked[0] = true;
         graph.getAdjacencyVertices(0).forEach(priorityQueue::add);
-        
+
         while (!priorityQueue.isEmpty()) {
             // 从最小堆中拿出一次切分情况下的最小权重边
             Edge<W> minEdge = priorityQueue.pop();
@@ -67,13 +67,13 @@ public class LazyPrimMST<W extends Number & Comparable<W>> {
             mst.add(minEdge);
             visit(minEdge.getTo());
         }
-        
+
         // 计算权重
         this.totalWeight = mst.stream()
                 .map(e -> (Number) e.getWeight())
                 .reduce(0, (a, b) -> a.doubleValue() + b.doubleValue());
     }
-    
+
     /**
      * 访问节点的必要操作
      *
@@ -87,13 +87,13 @@ public class LazyPrimMST<W extends Number & Comparable<W>> {
             }
         });
     }
-    
+
     public List<Edge<W>> getMst() {
         return mst;
     }
-    
+
     public Number getTotalWeight() {
         return totalWeight;
     }
-    
+
 }

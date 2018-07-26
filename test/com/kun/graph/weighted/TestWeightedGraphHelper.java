@@ -8,10 +8,10 @@ import org.junit.Test;
  * @version 1.0 2018/3/10 13:57
  */
 public class TestWeightedGraphHelper {
-    
+
     private static DenseWeightedGraph<Double> DG = new DenseWeightedGraph<>(8, false);
     private static WeightedGraph<Double> SG = new SparseWeightedGraph<>(8, false);
-    
+
     @BeforeClass
     public static void init() {
         DG.addEdge(new Edge<>(4, 5, 0.35));
@@ -47,13 +47,13 @@ public class TestWeightedGraphHelper {
         SG.addEdge(new Edge<>(6, 0, 0.58));
         SG.addEdge(new Edge<>(6, 4, 0.93));
     }
-    
+
     @Test
     public void test() {
         SG.show();
         System.out.println("=================");
         DG.show();
     }
-    
-    
+
+
 }

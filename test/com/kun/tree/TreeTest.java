@@ -7,7 +7,7 @@ import org.junit.Test;
  * @version 1.0 2018/3/4 13:45
  */
 public class TreeTest {
-    
+
     @Test
     public void testTree() {
         BinarySearchTree<Integer, String> tree = new BinarySearchTree<>();
@@ -36,5 +36,5 @@ public class TreeTest {
         tree.inOrder(System.out::println);
         System.out.println();
     }
-    
+
 }

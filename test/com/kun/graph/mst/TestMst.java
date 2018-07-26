@@ -11,7 +11,7 @@ import org.junit.Test;
 public class TestMst {
 
     private SparseWeightedGraph<Double> graph = new SparseWeightedGraph<>(8, false);
-    
+
     {
         graph.addEdge(new Edge<>(4, 5, .35));
         graph.addEdge(new Edge<>(4, 7, .37));
@@ -30,7 +30,7 @@ public class TestMst {
         graph.addEdge(new Edge<>(6, 0, .58));
         graph.addEdge(new Edge<>(6, 4, .93));
     }
-    
+
     @Test
     public void testLazyPrimMst() {
         LazyPrimMST<Double> mst = new LazyPrimMST<>(graph);
@@ -38,7 +38,7 @@ public class TestMst {
         Number totalWeight = mst.getTotalWeight();
         System.out.println("totalWeight = " + totalWeight);
     }
-    
+
     @Test
     public void testPrimMst() {
         PrimMST<Double> mst = new PrimMST<>(graph);
@@ -46,7 +46,7 @@ public class TestMst {
         Number totalWeight = mst.getTotalWeight();
         System.out.println("totalWeight = " + totalWeight);
     }
-    
+
     @Test
     public void testKruskal() {
         KruskalMST<Double> mst = new KruskalMST<>(graph);

@@ -13,24 +13,24 @@ import java.util.Random;
  * @version 1.0 2018/3/7 23:19
  */
 public class UnionFindTest {
-    
+
     private static int size = 1000;
     private static QuickFind quickFind = new QuickFind(size);
     private static OptimizedUnionFind optimizedUF = new OptimizedUnionFind(size);
     private static PathCompressionUnionFind pcUF = new PathCompressionUnionFind(size);
     private Instant instant;
     private String ufName;
-    
+
     @Before
     public void init() {
         instant = Instant.now();
     }
-    
+
     @After
     public void tearDown() {
         System.out.println(ufName + "   " + Duration.between(instant, Instant.now()));
     }
-    
+
     @Test
     public void testQuickFind() {
         ufName = "QuickFind";
@@ -42,7 +42,7 @@ public class UnionFindTest {
             quickFind.isConnected(random.nextInt(size), random.nextInt(size));
         }
     }
-    
+
     @Test
     public void testOptimizedUF() {
         ufName = "OptimizedUnionFind";
@@ -54,7 +54,7 @@ public class UnionFindTest {
             optimizedUF.isConnected(random.nextInt(size), random.nextInt(size));
         }
     }
-    
+
     @Test
     public void testPcUF() {
         ufName = "PathCompressionUnionFind";
@@ -66,5 +66,5 @@ public class UnionFindTest {
             pcUF.isConnected(random.nextInt(size), random.nextInt(size));
         }
     }
-    
+
 }

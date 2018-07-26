@@ -10,7 +10,7 @@ import java.util.Deque;
 /**
  * 求解单源最短路径问题
  * Dijkstra 算法，可以处理有向图以及无向图
- *
+ * <p>
  * 缺陷：不能处理存在负权边的图
  * 时间复杂度：O(ELogV)
  *
@@ -18,7 +18,7 @@ import java.util.Deque;
  * @version 1.0 2018/3/16 20:29
  */
 public class DijkstraPath<W extends Number & Comparable<W>> {
-    
+
     /**
      * 保存一个图的引用
      */
@@ -39,7 +39,7 @@ public class DijkstraPath<W extends Number & Comparable<W>> {
      * 记录单条路径的源，可以逆向追溯整条最短路径
      */
     private Edge<W>[] from;
-    
+
     @SuppressWarnings("unchecked")
     public DijkstraPath(WeightedGraph<W> graph, int start) {
         assert start >= 0 && start < graph.getVertices();
@@ -49,19 +49,19 @@ public class DijkstraPath<W extends Number & Comparable<W>> {
         this.distance = new Number[graph.getVertices()];
         this.marked = new boolean[graph.getVertices()];
         this.from = (Edge<W>[]) new Edge[graph.getVertices()];
-        
+
         IndexMinHeap<W> indexMinHeap = new IndexMinHeap(Comparable.class, graph.getVertices());
         // 源点的处理
         distance[start] = 0;
         from[start] = new Edge<>(start, start, (W) (Number) 0);
         marked[start] = true;
         indexMinHeap.insert((W) distance[start], start);
-        
+
         while (!indexMinHeap.isEmpty()) {
             // 取出堆中最短的路径（这个节点没有更短的了）
             int index = indexMinHeap.popIndex();
             marked[index] = true;
-            
+
             // 遍历该节点相邻的节点，查看相邻节点是否需要松弛操作
             graph.getAdjacencyVertices(index).forEach((e) -> {
                 int to = e.getTo();
@@ -83,7 +83,7 @@ public class DijkstraPath<W extends Number & Comparable<W>> {
             });
         }
     }
-    
+
     /**
      * 获取目标点到源点的最短路径长度
      *
@@ -94,7 +94,7 @@ public class DijkstraPath<W extends Number & Comparable<W>> {
         assert hasPath(dest);
         return distance[dest];
     }
-    
+
     /**
      * 判断目标点与源点之间是否存在路径
      *
@@ -105,7 +105,7 @@ public class DijkstraPath<W extends Number & Comparable<W>> {
         assert dest >= 0 && dest < graph.getVertices();
         return marked[dest];
     }
-    
+
     /**
      * 迭代到目标点的最短路径
      *
@@ -122,13 +122,13 @@ public class DijkstraPath<W extends Number & Comparable<W>> {
         }
         return deque;
     }
-    
+
     public void printShortestPath(int dest) {
         System.out.print(start);
-        getShortestPath(dest).forEach(e -> {
-            System.out.print(" -> " + e.getTo());
-        });
+        getShortestPath(dest).forEach(e ->
+            System.out.print(" -> " + e.getTo())
+        );
         System.out.println();
     }
-    
+
 }

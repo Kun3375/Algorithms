@@ -8,12 +8,12 @@ import org.junit.Test;
  * @version 1.0 2018/3/10 13:57
  */
 public class TestGraphHelper {
-    
+
     private static Graph DG1 = new DenseGraph(13, false);
     private static Graph DG2 = new DenseGraph(6, false);
     private static Graph SG1 = new SparseGraph(13, false);
     private static Graph SG2 = new SparseGraph(6, false);
-    
+
     @BeforeClass
     public static void init() {
         DG1.addEdge(0, 5);
@@ -42,7 +42,7 @@ public class TestGraphHelper {
         SG1.addEdge(7, 8);
         SG1.addEdge(9, 11);
         SG1.addEdge(5, 3);
-        
+
         DG2.addEdge(0, 1);
         DG2.addEdge(0, 2);
         DG2.addEdge(0, 5);
@@ -60,7 +60,7 @@ public class TestGraphHelper {
         SG2.addEdge(3, 4);
         SG2.addEdge(3, 5);
     }
-    
+
     @Test
     public void testCount() {
         GraphCountHelper helper1 = GraphCountHelper.build(SG1);
@@ -70,7 +70,7 @@ public class TestGraphHelper {
         System.out.println(helper1.isConnected(5, 6));
         System.out.println(helper1.isConnected(5, 7));
     }
-    
+
     @Test
     public void testPath() {
         GraphPathHelper helper = GraphPathHelper.build(SG2, 0);
@@ -78,13 +78,13 @@ public class TestGraphHelper {
         helper.printPath(5);
         helper.getPath(5).forEach(System.out::print);
     }
-    
+
     @Test
     public void testShortestPath() {
         GraphShortestPathHelper helper = GraphShortestPathHelper.build(DG2, 0);
         System.out.println(helper.getDistance(5));
         helper.printPath(5);
     }
-    
-    
+
+
 }

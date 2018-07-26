@@ -5,18 +5,18 @@ package com.kun.uf;
  * @version 1.0 2018/3/7 22:56
  */
 public class OptimizedUnionFind implements UnionFind {
-    
+
     /**
      * 保存父节点的索引值
      * 元素所属集为根节点索引值
      */
     protected int[] parent;
-    
+
     /**
      * 保存对应索引的元素下树形的最大层数
      */
     protected int[] rank;
-    
+
     public OptimizedUnionFind(int size) {
         assert size >= 0;
         parent = new int[size];
@@ -28,7 +28,7 @@ public class OptimizedUnionFind implements UnionFind {
             rank[i] = 1;
         }
     }
-    
+
     @Override
     public int find(int index) {
         assert index >= 0 && index < parent.length;
@@ -38,12 +38,12 @@ public class OptimizedUnionFind implements UnionFind {
         }
         return index;
     }
-    
+
     @Override
     public void union(int i, int j) {
-        assert i >= 0 && j < parent.length;
+        assert i >= 0 && i < parent.length;
         assert j >= 0 && j < parent.length;
-        
+
         int iRoot = find(i);
         int jRoot = find(j);
         if (iRoot == jRoot) {

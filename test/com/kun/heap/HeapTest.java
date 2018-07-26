@@ -10,10 +10,10 @@ import java.util.Random;
  * @version 1.0 2018/2/25 15:53
  */
 public class HeapTest {
-    
+
     private static int capacity = 10;
     private static Integer[] array = new Integer[capacity];
-    
+
     @BeforeClass
     public static void init() {
         Random random = new Random();
@@ -24,7 +24,7 @@ public class HeapTest {
         //        array = new int[] {8,9,2,5,4,8,9,3,2,0};
         System.out.println();
     }
-    
+
     @Test
     public void testIndexMaxHeap() {
         IndexMaxHeap<Integer> indexMaxHeap = new IndexMaxHeap<>(array);
@@ -64,7 +64,7 @@ public class HeapTest {
         printHeap(indexMaxHeap);
         printIndexAndReverse(indexMaxHeap);
     }
-    
+
     @Test
     public void testPop() {
         IndexMaxHeap<Integer> indexMaxHeap = new IndexMaxHeap<>(array);
@@ -80,7 +80,7 @@ public class HeapTest {
         }
         System.out.println();
     }
-    
+
     private <E extends Comparable<E>> void printSort(Heap<E> heap) {
         E[] sortedData = heap.sort();
         for (int i = 0; i < sortedData.length; i++) {
@@ -88,14 +88,14 @@ public class HeapTest {
         }
         System.out.println();
     }
-    
+
     private <E extends Comparable<E>> void printHeap(IndexMaxHeap<E> indexMaxHeap) {
         for (E datum : indexMaxHeap.data) {
             System.out.print(datum + " ");
         }
         System.out.println();
     }
-    
+
     private void printIndexAndReverse(IndexMaxHeap indexMaxHeap) {
         for (int index : indexMaxHeap.indexes) {
             System.out.print(index + " ");
@@ -106,5 +106,5 @@ public class HeapTest {
         }
         System.out.println();
     }
-    
+
 }

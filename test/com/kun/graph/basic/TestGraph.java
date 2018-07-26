@@ -10,18 +10,18 @@ import java.util.Random;
  * @version 1.0 2018/3/9 23:30
  */
 public class TestGraph {
-    
+
     private static int vertex = 20;
     private static int edge = 100;
     private static DenseGraph denseGraph = new DenseGraph(vertex, false);
     private static SparseGraph sparseGraph = new SparseGraph(vertex, false);
-    
+
     @BeforeClass
     public static void init() {
         initEdge(denseGraph);
         initEdge(sparseGraph);
     }
-    
+
     @Test
     public void testSparsePrintAdjacencyList() {
         sparseGraph.show();
@@ -31,7 +31,7 @@ public class TestGraph {
     public void testDensePrintAdjacencyList() {
         denseGraph.show();
     }
-    
+
     private static void initEdge(Graph graph) {
         Random random = new Random();
         // 连接

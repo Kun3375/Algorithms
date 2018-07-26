@@ -9,9 +9,9 @@ package com.kun.uf;
  * @version 1.0 2018/3/7 22:39
  */
 public class QuickFind implements UnionFind {
-    
+
     private int[] id;
-    
+
     public QuickFind(int size) {
         assert size >= 0;
         id = new int[size];
@@ -20,18 +20,18 @@ public class QuickFind implements UnionFind {
             id[i] = i;
         }
     }
-    
+
     @Override
     public int find(int index) {
         assert index >= 0 && index < id.length;
-        return  id[index];
+        return id[index];
     }
-    
+
     @Override
     public void union(int i, int j) {
-        assert i >= 0 && j < id.length;
+        assert i >= 0 && i < id.length;
         assert j >= 0 && j < id.length;
-        
+
         int iId = id[i];
         for (int index = 0; index < id.length; index++) {
             if (id[index] == iId) {
@@ -39,5 +39,5 @@ public class QuickFind implements UnionFind {
             }
         }
     }
-    
+
 }

@@ -8,17 +8,17 @@ import java.util.Arrays;
  * @version 1.0 2018/3/3 11:35
  */
 public class IndexMinHeap<E extends Comparable<E>> implements IndexHeap<E> {
-    
+
     /**
      * 堆化的索引数组
      */
     protected int[] indexes;
-    
+
     /**
      * 反向查找数组，用来检索原索引在堆中（index 数组中）的位置
      */
     protected int[] reverse;
-    
+
     /**
      * 使用数组容纳元素，每个子节点 n，父节点为 (n - 1) / 2
      */
@@ -31,7 +31,7 @@ public class IndexMinHeap<E extends Comparable<E>> implements IndexHeap<E> {
      * 该堆当前元素个数
      */
     protected int count;
-    
+
     /**
      * 指定堆容量，构造一个最小堆
      *
@@ -50,7 +50,7 @@ public class IndexMinHeap<E extends Comparable<E>> implements IndexHeap<E> {
         this.capacity = capacity;
         this.count = 0;
     }
-    
+
     /**
      * 使用现成的数组构造一个最小堆
      *
@@ -71,7 +71,7 @@ public class IndexMinHeap<E extends Comparable<E>> implements IndexHeap<E> {
             shiftDown(i);
         }
     }
-    
+
     /**
      * 为 shiftDown 提供的静态实现
      *
@@ -98,7 +98,7 @@ public class IndexMinHeap<E extends Comparable<E>> implements IndexHeap<E> {
         }
         array[index] = e;
     }
-    
+
     /**
      * 交换数组中的两个元素
      *
@@ -111,28 +111,28 @@ public class IndexMinHeap<E extends Comparable<E>> implements IndexHeap<E> {
         array[i] = array[j];
         array[j] = temp;
     }
-    
+
     private static void swap(int[] array, int i, int j) {
         int temp = array[i];
         array[i] = array[j];
         array[j] = temp;
     }
-    
+
     @Override
     public int size() {
         return count;
     }
-    
+
     @Override
     public int capacity() {
         return capacity;
     }
-    
+
     @Override
     public boolean isEmpty() {
         return count == 0;
     }
-    
+
     /**
      * 在指定索引处添加元素，不允许索引处存在旧值
      *
@@ -142,12 +142,12 @@ public class IndexMinHeap<E extends Comparable<E>> implements IndexHeap<E> {
     public void insert(E datum, int index) {
         assert count < capacity && reverse[index] == -1;
         data[index] = datum;
-    
+
         indexes[count] = index;
         reverse[index] = count;
         shiftUp(count++);
     }
-    
+
     /**
      * 向堆中添加一个元素
      *
@@ -173,7 +173,7 @@ public class IndexMinHeap<E extends Comparable<E>> implements IndexHeap<E> {
         reverse[indexes[count]] = count;
         shiftUp(count++);
     }
-    
+
     /**
      * 删除原数组中指定位置的元素，仍然需要构成最小堆
      * 对于索引堆，增删元素不仅需要维护 indexes 以及 reverse
@@ -194,13 +194,13 @@ public class IndexMinHeap<E extends Comparable<E>> implements IndexHeap<E> {
         // 调整indexes交换索引，调整reverses
         indexes[reverse[index]] = indexes[count];
         reverse[indexes[count]] = index;
-        
+
         indexes[count] = index;
         reverse[index] = -1;
         shiftDown(index);
         return e;
     }
-    
+
     /**
      * 弹出堆中的最小值
      *
@@ -220,7 +220,7 @@ public class IndexMinHeap<E extends Comparable<E>> implements IndexHeap<E> {
         shiftDown(0);
         return min;
     }
-    
+
     /**
      * 弹出最小值在原数组中的索引
      *
@@ -240,7 +240,7 @@ public class IndexMinHeap<E extends Comparable<E>> implements IndexHeap<E> {
         shiftDown(0);
         return index;
     }
-    
+
     /**
      * 获取最小元素值而不弹出该值
      *
@@ -250,9 +250,10 @@ public class IndexMinHeap<E extends Comparable<E>> implements IndexHeap<E> {
     public E peek() {
         return data[indexes[0]];
     }
-    
+
     /**
      * 查看指定位置的元素
+     *
      * @param index 指定索引
      * @return 原数组中的元素
      */
@@ -260,7 +261,7 @@ public class IndexMinHeap<E extends Comparable<E>> implements IndexHeap<E> {
     public E peekIndex(int index) {
         return data[index];
     }
-    
+
     /**
      * 返回最小元素的索引
      *
@@ -269,13 +270,13 @@ public class IndexMinHeap<E extends Comparable<E>> implements IndexHeap<E> {
     public int getMaxIndex() {
         return indexes[0];
     }
-    
+
     @Override
     public boolean contain(int index) {
         assert index >= 0 && index < capacity;
         return reverse[index] != -1;
     }
-    
+
     /**
      * 改变原数组中的一个元素，重新堆化
      * 需要保证原索引处有值
@@ -286,12 +287,12 @@ public class IndexMinHeap<E extends Comparable<E>> implements IndexHeap<E> {
     @Override
     public void change(int index, E newOne) {
         assert contain(index);
-        
+
         data[index] = newOne;
         shiftDown(reverse[index]);
         shiftUp(reverse[index]);
     }
-    
+
     /**
      * 元素上移操作，调整至堆中合理位置
      *
@@ -316,7 +317,7 @@ public class IndexMinHeap<E extends Comparable<E>> implements IndexHeap<E> {
         indexes[index] = i;
         reverse[indexes[index]] = index;
     }
-    
+
     /**
      * 元素下移操作，调整至队中合理位置
      *
@@ -350,8 +351,8 @@ public class IndexMinHeap<E extends Comparable<E>> implements IndexHeap<E> {
         // 修复最后一次 pop 操作会导致索引不更新成 -1
         reverse[indexes[index]] = count == 0 ? -1 : index;
     }
-    
-    
+
+
     @SuppressWarnings("unchecked")
     @Override
     public E[] sort() {
@@ -367,5 +368,5 @@ public class IndexMinHeap<E extends Comparable<E>> implements IndexHeap<E> {
         }
         return sortedData;
     }
-    
+
 }

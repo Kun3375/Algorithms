@@ -7,16 +7,16 @@ package com.kun.graph.weighted;
  * @version 1.0 2018/3/11 11:21
  */
 public interface WeightedGraph<W extends Number & Comparable<W>> {
-    
+
     int getVertices();
-    
+
     int getEdges();
-    
+
     void addEdge(Edge<W> edge);
-    
+
     boolean hasEdge(int i, int j);
-    
+
     Iterable<Edge<W>> getAdjacencyVertices(int i);
-    
+
     void show();
 }
